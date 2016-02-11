@@ -1,0 +1,136 @@
+snippet rangetree "range queries"
+template <typename T>
+class bitree{ //range max between two ix
+  const int &n; const vector<T> &a; //inp array ix 0->n-1
+  vector<T> t, upd; //b tree
+  vector<bool> lz;
+  public:
+  bitree(const vector<T> &a, const int &n):
+    n(n),a(a),t(4*n),upd(4*n),lz(4*n,false){}
+  void build(){build(1,0,n-1);}
+  void build(int v, int l, int r){
+    if(l==r){ t[v] = a[l]; return; }
+    int mid = (l+r)/2, nv=v*2;
+    build(nv, l, mid); build(nv+1, mid+1, r);
+    t[v] = max(t[nv], t[nv+1]);
+  }
+  void trickledown(int v, int nv){
+    //update t[nv], t[nv+1], upd[nv], upd[nv+1]
+    upd[nv]=max(upd[nv],upd[v]);
+    upd[nv+1]=max(upd[nv+1],upd[v]);
+    t[nv]=max(t[nv],upd[v]);
+    t[nv+1]=max(t[nv+1],upd[v]);
+    lz[nv]=lz[nv+1]=true;
+    lz[v]=false; upd[v]=0;
+  }
+  void updaterange(int ql, int qr, T val){updaterange(ql,qr,val,1,0,n-1);}
+  void updaterange(int ql, int qr, T val, int v, int l, int r){
+    if(ql>qr)return;
+    if(qr>r || ql<l)return;
+    if(l==r){t[v]=val;return;}
+    if(ql<=l && qr>=r){
+      //update upd[v], t[v]
+      upd[v]=max(upd[v],val);
+      t[v]=max(t[v],val);
+      lz[v]=true;
+      return;
+    }
+    int mid = (l+r)/2, nv=v*2;
+    if(lz[v])trickledown(v,nv);
+    updaterange(ql,qr,val,nv,l,mid);
+    updaterange(ql,qr,val,nv+1,mid+1,r);
+    t[v]=max(t[nv], t[nv+1]);
+  }
+  void update(int ix){update(ix,1,0,n-1);}
+  void update(int ix, int v, int l, int r){
+    if(l==r){ t[v]=a[ix]; return; }
+    int mid = (l+r)/2, nv=v*2;
+    if(lz[v])trickledown(v,nv);
+    if(ix<=mid) update(ix,nv,l,mid);
+    else update(ix,nv+1,mid+1,r);
+    t[v]=max(t[nv], t[nv+1]);
+  }
+  T query(int ql, int qr){return query(ql,qr,1,0,n-1);}
+  T query(int ql,int qr,int v,int L,int R){ //ql, qr inclusive
+    if(ql>R || qr<L)return 0;
+    if(ql<=L && qr>=R)return t[v];
+    int MID = (L+R)/2, nv=v*2;
+    if(lz[v])trickledown(v,nv);
+    T ans = max(query(ql,qr,nv,L,MID), query(ql,qr,nv+1,MID+1,R));
+    return ans;
+  }
+};
+endsnippet
+
+snippet fenwicksum "range sum using fenwick"
+//fenwick class. index 1 to n for array of size n
+template <typename T>
+class fenwick {
+  int n;vector<T> a;
+  public:
+  fenwick(int n):n(n),a(n+1,0){}
+  T getsum(int ix){ T ret=0; for(int i=ix;i>0;i-=(i&(-i)))ret+=a[i]; return ret; }
+  T getsumbw(int ia, int ib){ return(getsum(ib)-getsum(ia-1)); }
+  void add(int ix, T val) { for(int i=ix;i<=n;i+=(i&(-i)))a[i]+=val; }
+  T getval(int ix){
+    T ret = a[ix];
+    if(ix>0) {
+      int tmp = ix - (ix&(-ix));
+      ix--;
+      while(ix!=tmp){ ret -= a[ix]; ix -= (ix&(-ix));
+      }
+    }
+    return ret;
+  }
+};
+endsnippet
+
+snippet fenwickmax "range max using fenwick"
+template <typename T>
+class fenwick {
+  int n;vector<T> a; vecto<T> v;
+  public:
+  fenwick(int n):n(n),a(n+1),v(n+1){}
+  void set(int ix, T val) { if(v[ix]<val) {v[ix]=val;for(int i=ix;i<=n;i+=(i&(-i)))a[i]=max(a[i],val);}}
+  T getmax(int ix){ $1 ret=0; for(int i=ix;i>0;i-=(i&(-i)))ret=max(ret,a[i]); return ret; }
+  T getrangemax(int ia, int ib){
+    if(ia==ib)return v[ia];
+    int ix=ib-(ib&(-ib));
+    if(ix>=ia)return max(a[ib],getrangemax(ia,ix));
+    else return max(v[ib],getrangemax(ia,ib-1));
+  }
+  T getval(int ix){return v[ix];}
+};
+endsnippet
+
+snippet trie "form a tree using array of words"
+class trie {
+  int ix, tx;
+  vector<vi> t;
+  vi endix;
+  public:
+    trie():
+      ix(0),tx(1),t(MAXT,vi(26,0)),endix(MAXT,-1){}
+    void update(const char* s, int tix=0){
+      if((*s)==0){
+        endix[tix]=ix;
+        return;
+      }
+      int c=(*s)-'a';
+      if(t[tix][c]==0)t[tix][c]=tx++;
+      update(s+1,t[tix][c]);
+    }
+    void addword(const char* s){
+      update(s);
+      ix++;
+    }
+};
+endsnippet
+
+snippet policy "policy based structure"
+#include<ext/pb_ds/assoc_container.hpp>
+#include<ext/pb_ds/tree_policy.hpp>
+using namespace __gnu_pbds;
+template <typename T>
+using ordered_set = tree<T, null_type, less<T>, rb_tree_tag, tree_order_statistics_node_update>;
+endsnippet

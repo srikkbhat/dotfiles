@@ -1,0 +1,2 @@
+#!/bin/bash
+find . -type f \( -name '*~' -o -name '*.pyc' -o -name 'desktop.ini' -o -name '.DS_Store' \) -delete

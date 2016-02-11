@@ -1,0 +1,103 @@
+snippet kmp "knuth morris pratt"
+class kmp{
+  typedef string T;
+  int n;
+  const T &a;
+  vi pf;
+  public:
+  kmp(const int &n, const T &a):n(n),a(a),pf(n+1){
+    int i, j;
+    pf[0]=pf[1]=0;
+    for(i=2;i<=n;i++){
+      j=pf[i-1];
+      while(j>0 && a[i-1]!=a[j])j=pf[j];
+      if(a[i-1]==a[j])j++;
+      pf[i]=j;
+    }
+  }
+  void search(const int &m, const T&b){
+    vector<bool> mt(m+1,false);
+    int i,j;
+    for(i=0,j=0;i<m;i++){
+      while(j>0 && a[j]!=b[i])j=pf[j];
+      if(a[j]==b[i])j++;
+      if(j==n){
+        mt[i]=1;
+        j=pf[j];
+      }
+    }
+  }
+};
+endsnippet
+
+snippet calcz "z algorithm pattern matching"
+template <typename T>
+void zalgo(const T &s) {
+  int L = 0, R = 0;
+  vi z(n+1,0);
+  int n=strlen(s);
+  for (int i = 1; i < n; i++) {
+    if (i > R) {
+      L = R = i;
+      while (R < n && s[R-L] == s[R]) R++;
+      z[i] = R-L; R--;
+    } else {
+      int k = i-L;
+      if (z[k] < R-i+1) z[i] = z[k];
+      else {
+        L = i;
+        while (R < n && s[R-L] == s[R]) R++;
+        z[i] = R-L; R--;
+      }
+    }
+  }
+}
+endsnippet
+snippet hash "hashing"
+ll pw[2][MAXL];
+struct mhash {
+  static const int MODA=1000000007;
+  static const int MODB=1000000009;
+  static const int BA=31;
+  static const int BB=29;
+  static bool done;
+  pi h;
+  int len;
+  mhash():h({0,0}),len(0){}
+  void reset(){h.fi=h.se=len=0;}
+  void merge(char c){
+    h.fi=(ll(BA)*h.fi+(c-'a')+1)%MODA;
+    h.se=(ll(BB)*h.se+(c-'a')+1)%MODB;
+    len++;
+  }
+  void merge(const mhash &o){
+    if(!done){ calcpw(); }
+    if(o.len==0)return;
+    h.fi = (h.fi*pw[0][o.len]+o.h.fi)%MODA;
+    h.se = (h.se*pw[1][o.len]+o.h.se)%MODB;
+    len+=o.len;
+    assert(len<MAXL);
+  }
+  ll geth(){ll ret=h.fi;ret <<= 30;return(ret|h.se);}
+  static void calcpw(){
+    done=true;
+    pw[0][0]=1;
+    pw[1][0]=1;
+    for(int i=1;i<MAXL;i++){
+      pw[0][i]=(pw[0][i-1]*BA)%MODA;
+      pw[1][i]=(pw[1][i-1]*BB)%MODB;
+    }
+  }
+  mhash& operator=(const mhash &o){
+    h.fi=o.h.fi; h.se=o.h.se;
+    len=o.len;
+    return *this;
+  }
+  bool operator<(const mhash &o)const{
+    if(h.fi!=o.h.fi)return h.fi<o.h.fi;
+    return h.se<o.h.se;
+  }
+  bool operator==(const mhash &o)const{return h.fi==o.h.fi && h.se==o.h.se;}
+};
+bool mhash::done=false;
+endsnippet

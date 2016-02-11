@@ -1,0 +1,160 @@
+snippet rangesum "sum of array ranges"
+class rangesum{
+  vector<${1:ll}> s;
+  public:
+    rangesum(const vector<${2:int}> &inp, const int &n){ //ix 0->n-1
+      s.resize(n+1);
+      for(int i=0;i<n;i++) s[i+1]=s[i]+inp[i];
+    }
+    $1 get(int x, int y) {return s[y+1]-s[x];} //y>=x, x,y inclusive
+};
+endsnippet
+snippet sliding "sliding min / max"
+class slidingrange {
+  int l, r, n;
+  const ${1:int} *a;
+  typedef pair<$1,int> spi;
+  deque<spi> dq;
+  public:
+  slidingrange(const $1 *a, int n):n(n),l(-1),r(-1),a(a){}
+  ~slidingrange(){}
+  $1 slide(int L, int R){ //0->n-1
+    assert(l<=L && r<=R && L<n && R<n);
+    for(int i=r+1;i<=R;i++){
+      while(!dq.empty() && dq.back().fi>=a[i])dq.pop_back();
+      dq.push_back(spi(a[i],i));
+    }
+    while(dq.front().se<L)dq.pop_front();
+    l=L,r=R;
+    return dq.front().fi;
+  }
+};
+endsnippet
+snippet sqrtdecomp "square root decomposition"
+class sqrtdecomp{
+  typedef ${1:ll} dt;
+  static const int blocks=${2:713};
+  int n,updates,blockcount,*blocksize;
+  dt *a, *blockresult, **blockvals, *b;
+  public:
+  sqrtdecomp(int n, dt *a):n(n),a(a){
+    blockresult = new dt[blocks];
+    blocksize=new int[blocks];
+    b=new dt[n+5];
+    blockvals=new dt*[blocks];
+    for(auto i=0;i<blocks;i++){ blockvals[i]=new dt[blocks+blocks+5]; }
+  }
+  ~sqrtdecomp(){
+    delete [] blocksize,delete[] blockresult,delete[] b;
+    for(auto i=0;i<blocks;i++){ delete [] blockvals[i]; }
+    delete[] blockvals;
+  }
+  void build(){
+    int r,i,j;
+    blockcount=0;
+    for(i=0;i<n;i+=blocks){
+      r=min(n,i+blocks);
+      blockresult[blockcount]=0;
+      blocksize[blockcount]=0;
+      for(j=i;j<r;j++){
+        blockvals[blockcount][blocksize[blockcount]++]=a[j];
+        blockresult[blockcount]+=a[j];
+      }
+      blockcount++;
+    }
+    updates=0;
+  }
+  void rebuild(){
+    int bix=0,i,j;
+    for(i=0;i<blockcount;i++){
+      for(j=0;j<blocksize[i];j++){
+        b[bix++]=blockvals[i][j];
+      }
+    }
+    n=bix;
+    for(i=0;i<n;i++){ a[i]=b[i]; }
+    build();
+  }
+  void remove(int ix){
+    int tcnt=0,bix,i,j;
+    for(i=0;i<blockcount && tcnt<=ix;i++){
+      tcnt+=blocksize[i];
+      if(tcnt>ix){
+        bix=blocksize[i]-(tcnt-ix);
+        blockresult[i]-=blockvals[i][bix];
+        for(j=bix;j<blocksize[i]-1;j++){ blockvals[i][j]=blockvals[i][j+1]; }
+        blocksize[i]--;
+      }
+    }
+    return;
+  }
+  void insert(int ix, dt val){
+    int tcnt=0,i=0,bix,j;
+    do{ //if ix > sum(blocksize[i]) then the update wont happen!!!!
+      tcnt+=blocksize[i];
+      if(tcnt>=ix){
+        bix=blocksize[i]-(tcnt-ix);
+        blockresult[i]+=val;
+        for(j=blocksize[i];j>bix;j--){blockvals[i][j]=blockvals[i][j-1];}
+        blockvals[i][bix]=val;
+        blocksize[i]++;
+      }
+      i++;
+    }while(i<blockcount && tcnt<ix);
+    updates++;
+    if(updates>blocks)rebuild();
+    return;
+  }
+  dt query(int ix){
+    dt res=0;
+    int tcnt=0,bix,i,j;
+    for(i=0;i<blockcount && tcnt<=ix;i++){
+      tcnt+=blocksize[i];
+      if(tcnt<=ix)res+=blockresult[i];
+      else{
+        bix=blocksize[i]-(tcnt-ix);
+        for(j=0;j<=bix;j++){res+=blockvals[i][j];}
+      }
+    }
+    return res;
+  }
+  dt query(int lix, int rix){ return (rix>=lix)?query(rix)-query(lix-1):0; }
+};
+endsnippet
+snippet moalgo "mo's algorithm"
+struct mo {
+  static const int BLK=225;
+  int l, r;
+  bool operator< (const mo &o) const{
+    int lb=l/BLK, ob=o.l/BLK;
+    if(lb!=ob)return lb<ob;
+    return r<o.r;
+  }
+};
+  int q;
+  vector<mo> m(q);
+  sort(m.begin(), m.end());
+  //zero based indexing
+  int cr=0, cl=0;
+  for(int i=0;i<q;i++){
+    mo &t=m[i];
+    while(cr<=t.r){
+      //add cr
+
+      cr++;
+    }
+    while(cl<t.l){
+      //remove cl
+
+      cl++;
+    }
+    while(cl>t.l){
+      cl--;
+      //add cl
+    }
+    while(cr>(t.r+1)){
+      cr--;
+      //remove cr
+    }
+  }
+endsnippet
