@@ -177,6 +177,8 @@ let g:syntastic_check_on_wq = 0
 "remap ultisnip expand
 let g:UltiSnipsExpandTrigger = "<c-j>"
 let g:UltiSnipsListSnippets = "<c-tab>"
+let g:UltiSnipsSnippetsDir = "~/.vim/snips" 
+let g:UltiSnipsSnippetDirectories = ["snips"]
 
 "YouCompleteMe
 let g:ycm_global_ycm_extra_conf = "~/.vim/.ycm_extra_conf.py"

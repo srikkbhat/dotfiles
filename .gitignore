@@ -3,3 +3,7 @@
 !.vimrc
 !.vim/
 !.vim/.ycm_extra_conf.py
+!.vim/colors/
+!.vim/colors/solarized.vim
+!.vim/snips/
+!.vim/snips/**/*
