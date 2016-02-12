@@ -1,0 +1,7 @@
+if [ "x"$2 = "x" ]; then
+    ssh ec2-user@${!1}
+else
+    ssh ec2-user@${!1} -L $3:localhost:$3 -N -f
+fi
+
+exit
