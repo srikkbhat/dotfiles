@@ -1,28 +1,19 @@
 snippet start "start program"
-#include <vector>
-#include <list>
-#include <map>
-#include <set>
-#include <deque>
-#include <stack>
-#include <bitset>
-#include <algorithm>
-#include <functional>
-#include <numeric>
-#include <utility>
-#include <sstream>
-#include <iostream>
-#include <iomanip>
-#include <cstdio>
-#include <cmath>
-#include <cstdlib>
-#include <ctime>
-#include <string>
-#include <cstring>
-#include <limits.h>
-#include <iterator>
+#include <bits/stdc++.h>
 
-int main(){
-    return 0;
+using namespace std;
+
+int main() {
+  $0
+  return 0;
+}
+endsnippet
+
+snippet testcases "test case loop"
+int $1;
+scanf("%d", &$1);
+for(int $2=0;$2<$1;$2++){
+  $0
+  doit();
 }
 endsnippet

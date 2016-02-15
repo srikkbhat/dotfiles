@@ -1,0 +1,21 @@
+snippet scanint "scanf integer"
+int $1;
+scanf("%d", &$1);
+endsnippet
+
+snippet scanll "scanf long long"
+long long $1;
+scanf("%lld", &$1);
+endsnippet
+
+snippet scanstr "scanf string line"
+char $1[$2];
+scanf("%s", $1);
+endsnippet
+
+snippet scanuntileof "scanf until end of file"
+char $1[$2];
+while (scanf("%s", $1) != -1){
+  $0
+}
+endsnippet
