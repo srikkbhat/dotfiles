@@ -1,0 +1,65 @@
+snippet graphal 'graph adjecency list'
+class graphal
+{
+  public:
+    int n;
+    int rev; //1,3 -> reverse edge, 2,3->bidirectional
+    vector <int> * ed;
+    vector <int> * rd;
+    graphal(int n, int rev=0){
+      this.n=n;
+      this.rev=rev;
+      ed = new vector<int>[n];
+      if(rev&1){
+        rd = new vector<int>[n];
+      }
+    }
+    ~graphal(){
+      delete[] ed;
+      if(rev&1){
+        delete[] rd;
+      }
+    }
+    void add(int a, int b){
+      ed[a].push_back(b);
+      if(rev&1)rd[b].push_back(a);
+      if(rev>1)ed[b].push_back(a);
+    }
+};
+endsnippet
+
+snippet graphwal 'weighted adjeceny list graph'
+class graphwal 
+{
+  public:
+    int n;
+    //1,3 -> reverse edge, 2,3->bidirectional
+    int rev;
+    vector < vector <pair<int,${1:int}> > >  ed;
+    vector < vector <pair<int,$1> > > red;
+    graphwal(){
+      n=0;
+      rev=0;
+    }
+    graphwal(int n){
+      this.n=n;
+      rev=0;
+      ed.resize(n);
+    }
+    graphwal(int n, int rev){
+      this.n = n;
+      this.rev = rev;
+      ed.resize(n);
+      if(rev&1) red.resize(n);
+    }
+    ~graphwal(){
+      ed.clear();
+      if(rev&1) red.clear();
+    }
+    void addEdge(int a, int b, $1 w){
+      ed[a].pb(mp(b,w));
+      if(rev>1)ed[b].pb(mp(a,w));
+      if(rev&1)red[b].pb(mp(a,w));
+    }
+};
+endsnippet

@@ -133,8 +133,12 @@ noremap <c-k> <c-w>k
 noremap <c-j> <c-w>j
 
 " easier moving between tabs
-map <Leader>n <esc>:tabprevious<CR>
+"map <Leader>n <esc>:tabprevious<CR>
 map <Leader>m <esc>:tabnext<CR>
+
+"easier moving between buffers
+map gt :bnext<CR>
+
 
 "Bind nohl
 " Removes highlight of your last search

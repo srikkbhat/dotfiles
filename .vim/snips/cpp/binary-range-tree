@@ -1,0 +1,49 @@
+snippet rangetree 'binary range tree'
+//range queries
+class bitree{ 
+  int n;
+  //reference to array with input values.
+  //index 1 to n
+  int *a; 
+  //binary tree array
+  int *t;
+
+  public:
+  bitree(int *a, int n){
+    this.n = n;
+    this.a = a;
+    t = new int[4*n];
+  }
+  ~bitree(){
+    delete[] t;
+  }
+
+  //call build(1, 0, n) to build the whole tree using a[]
+  void build(int v, int l, int r){ 
+    if(l+1==r){
+      t[v] = a[l];
+      return;
+    }
+    int mid = (l+r)>>1;
+    build(v*2, l, mid);
+    build(v*2+1, mid, r);
+
+    //modify the below line based on type of tree/queries
+    t[v] = $0 t[v*2] & t[v*2 + 1];
+  }
+  int query(int v, int l, int r, int L, int R){
+    if(l==L && r==R) {
+      return t[v];
+    }
+    int mid = (L+R)>>1;
+
+    //modify the below lines based on type of tree/queries.
+    int ans = (1ll<<MAXBIT) - 1;
+    if(l<mid)
+      ans &= query(v*2,l,min(r,mid),L,mid);
+    if(mid<r)
+      ans &= query(v*2+1, max(l,mid),r,mid,R);
+    return ans;
+  }
+};
+endsnippet
