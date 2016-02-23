@@ -1,4 +1,4 @@
-snippet graphal 'graph adjecency list'
+snippet graphal "graph adjecency list"
 class graphal
 {
   public:
@@ -28,7 +28,7 @@ class graphal
 };
 endsnippet
 
-snippet graphwal 'weighted adjeceny list graph'
+snippet graphwal "weighted adjeceny list graph"
 class graphwal 
 {
   public:

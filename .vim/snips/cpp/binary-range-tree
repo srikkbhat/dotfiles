@@ -1,4 +1,4 @@
-snippet rangetree 'binary range tree'
+snippet rangetree "binary range tree"
 //range queries
 class bitree{ 
   int n;

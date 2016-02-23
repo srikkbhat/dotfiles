@@ -1,0 +1,3 @@
+snippet dist "distance between two points"
+sqrt(({$1:x1}-{$2:x2})*($1-$2)+({$3:y1}-{$4:y2})*($3-$4));
+endsnippet
