@@ -29,7 +29,7 @@ class graphal
 endsnippet
 
 snippet graphwal "weighted adjeceny list graph"
-class graphwal 
+class graphwal
 {
   public:
     int n;

@@ -203,6 +203,9 @@ let g:ycm_global_ycm_extra_conf = "~/.vim/.ycm_extra_conf.py"
 " Open NerdTree
 map <leader>n :NERDTreeToggle<CR>
 
+"ctrlp options
+let g:ctrlp_root_markers=['pom.xml', 'bower.json', 'package.json', 'gulpfile.js']
+
 " Ack searching
 nmap <leader>a <Esc>:Ack!
 
@@ -211,3 +214,22 @@ map <leader>g :UndotreeToggle<cr>
 
 "t comment
 map <c-/> :TComment<cr>
+
+"ignores
+let NERDTreeIgnore=['\~$', '\.pyc', '\.swp$', '\.git', '\.hg', '\.svn',
+      \ '\.ropeproject', '\.o', '\.bzr', '\.ipynb_checkpoints$',
+      \ '__pycache__', 'dist$', 'tmp$',
+      \ '\.egg$', '\.egg-info$', '\.tox$', '\.idea$', '\.sass-cache',
+      \ '\.env$', '\.env[0-9]$', '\.coverage$', '\.tmp$', '\.gitkeep$',
+      \ '\.coverage$', '\.webassets-cache$', '\.vagrant$', '\.DS_Store',
+      \ '\.env-pypy$']
+
+set wildignore+=*.o,*.obj,*~,*.pyc "stuff to ignore when tab completing
+set wildignore+=.env,.env[0-9]+,.env-pypy,.tmp,.coverage,*.gem,*DS_Store*
+set wildignore+=.sass-cache/,__pycache__/,.webassets-cache/
+set wildignore+=vendor/rails/**,vendor/cache/**
+set wildignore+=.git/**,.gitkeep
+set wildignore+=log/**,tmp/**,dist/**,.tox/**,.idea/**
+set wildignore+=.vagrant/**,.coverage/**,*/.nx/**,*.app"
+set wildignore+=*.egg,*.egg-info,*.png,*.jpg,*.gif
+set wildignore+=*.so,*.swp,*.zip,*/.Trash/**,*.pdf,*.dmg,*/Library/**,*/.rbenv/**

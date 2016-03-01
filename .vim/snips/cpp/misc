@@ -7,5 +7,5 @@ sort(${1:vi}.begin(), $1.end());
 endsnippet
 
 snippet memset "array filling"
-memset({$1:arr},{$2:0},sizeof($1));
+memset(${1:arr},${2:0},sizeof($1));
 endsnippet

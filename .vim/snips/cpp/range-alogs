@@ -1,10 +1,10 @@
 snippet rangetree "binary range tree"
 //range queries
-class bitree{ 
+class bitree{
   int n;
   //reference to array with input values.
   //index 1 to n
-  int *a; 
+  int *a;
   //binary tree array
   int *t;
 
@@ -19,7 +19,7 @@ class bitree{
   }
 
   //call build(1, 0, n) to build the whole tree using a[]
-  void build(int v, int l, int r){ 
+  void build(int v, int l, int r){
     if(l+1==r){
       t[v] = a[l];
       return;
@@ -46,4 +46,21 @@ class bitree{
     return ans;
   }
 };
+endsnippet
+
+snippet rangesum "sum of array ranges"
+class rangesum{
+  ${1:ll} * sum;
+  public:
+    //input array index 0 to n-1
+    rangesum(${2:int} *inp, int n){
+      sum=new $1[n+1];
+      sum[0]=0;
+      for(int i=0;i<n;i++) s[i+1]=s[i]+inp[i];
+    }
+    ~rangesum() {delete [] sum;}
+    //y>=x, x,y inclusive
+    $1 get(int x, int y) {return s[y+1]-s[x];}
+
+}
 endsnippet
