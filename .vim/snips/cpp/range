@@ -1,0 +1,72 @@
+snippet rangetree "binary range tree"
+//range queries. e.g. max queries
+template <typename T>
+class bitree{
+  //reference to array with input values.
+  const T *a;
+  //binary tree array
+  T *t;
+  const static int TWO=2;
+  const static int ONE=1;
+
+  public:
+  bitree(const T& a, int n){
+    this->a = &a;
+    t = new T[4*n]();
+  }
+  ~bitree(){
+    delete[] t;
+  }
+
+  //call build(1, 0, n-1) to build the whole tree using a[]
+  void build(int v, int l, int r){
+    if(l==r){
+      t[v] = a[l];
+      return;
+    }
+    int mid = (l+r)>>ONE;
+    build(v*TWO, l, mid);
+    build(v*TWO+ONE, mid+ONE, r);
+
+    t[v] = max(t[v*TWO], t[v*TWO+ONE]);
+  }
+  void update(int v, int l, int r, int id){
+    if(l==r){
+      t[v]=a[id];
+      return;
+    }
+    int mid = (l+r)>>ONE;
+    if(id<=mid) update(v*TWO, l, mid, id);
+    else update(v*TWO+ONE, mid+ONE, r, id);
+    t[v]=max(t[v*TWO], t[v*TWO+ONE]);
+  }
+  T query(int v, int l, int r, int L, int R){
+    if(l>r)return 0;
+    if(l==L && r==R) {
+      return t[v];
+    }
+    int MID = (L+R)>>ONE;
+
+    T ans = query(v*TWO,l,min(r,MID),L,MID);
+    ans = max(ans, query(v*TWO+ONE,max(MID+ONE,l),r,MID+ONE,R));
+    return ans;
+  }
+};
+endsnippet
+
+snippet rangesum "sum of array ranges"
+class rangesum{
+  ${1:ll} * sum;
+  public:
+    //input array index 0 to n-1
+    rangesum(${2:int} *inp, int n){
+      sum=new $1[n+1];
+      sum[0]=0;
+      for(int i=0;i<n;i++) s[i+1]=s[i]+inp[i];
+    }
+    ~rangesum() {delete [] sum;}
+    //y>=x, x,y inclusive
+    $1 get(int x, int y) {return s[y+1]-s[x];}
+
+}
+endsnippet
