@@ -27,6 +27,36 @@ int main() {
 }
 endsnippet
 
+snippet usaco "uscao start program"
+/*
+   ID: srikkbh1
+   PROG: ${1:test}
+   LANG: C++11
+ */
+
+#include <bits/stdc++.h>
+
+using namespace std;
+
+#define fi first
+#define se second
+#define pb push_back
+#
+typedef pair<int, int> pi;
+typedef long long ll;
+typedef double dbl;
+typedef vector<int> vi;
+
+int main() {
+  FILE *fin = fopen("$1.in", "r");
+  FILE *fout=fopen("$1.out", "w");
+  int n;
+  fscanf(fin, "%d", &n);
+  fprintf(fout,"%d\n", n);
+  return 0;
+}
+endsnippet
+
 snippet testcases "test case loop"
 int $1;
 scanf("%d", &$1);

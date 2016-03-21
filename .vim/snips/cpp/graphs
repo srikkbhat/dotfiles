@@ -63,3 +63,39 @@ class graphwal
     }
 };
 endsnippet
+
+snippet toposort "topological sorting"
+class toposort{
+  public:
+  vector<int> ts;
+  toposort(graphal &g){
+    int n, ix, nx, *inc, *q, qb,qe;
+    n=g.n;
+    inc=new int[n]();
+    q=new int[n+1]();
+    qb=qe=0;
+    ts.clear();
+
+    for(int i=0;i<n;i++)
+      for(int j=0;j<g.ed[i].size();j++){
+        inc[g.ed[i][j]]++;
+      }
+
+    for(int i=0;i<n;i++)if(inc[i]==0)q[qe++]=i;
+    while(qb<qe){
+      ix=q[qb++];
+      ts.pb(ix);
+      for(int i=0;i<g.ed[ix].size();i++){
+        nx=g.ed[ix][i];
+        inc[nx]--;
+        if(inc[nx]==0)q[qe++]=nx;
+      }
+    }
+  }
+  ~toposort(){
+    delete[] q;
+    delete[] inc;
+  }
+};
+
+endsnippet
