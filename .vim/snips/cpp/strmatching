@@ -1,6 +1,6 @@
 snippet kmp "knuth morris pratt"
 template <typename T>
-void kmp(T &a, T &b){
+void kmp(const T &a, const T &b){
   int n=a.size(), m=b.size(), i, j;
   int *pf;
   bool *mt;
@@ -20,6 +20,30 @@ void kmp(T &a, T &b){
     if(j==n){
       mt[i]=1;
       j=pf[j];
+    }
+  }
+}
+endsnippet
+
+snippet calcz "z algorithm pattern matching"
+template <typename T>
+void zalgo(const T &s) {
+  int L = 0, R = 0, *z;
+  int n=strlen(s);
+  z = new int[n+1];
+  for (int i = 1; i < n; i++) {
+    if (i > R) {
+      L = R = i;
+      while (R < n && s[R-L] == s[R]) R++;
+      z[i] = R-L; R--;
+    } else {
+      int k = i-L;
+      if (z[k] < R-i+1) z[i] = z[k];
+      else {
+        L = i;
+        while (R < n && s[R-L] == s[R]) R++;
+        z[i] = R-L; R--;
+      }
     }
   }
 }
