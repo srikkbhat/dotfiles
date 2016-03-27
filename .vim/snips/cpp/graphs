@@ -3,27 +3,48 @@ class graphal
 {
   public:
     int n;
-    int rev; //1,3 -> reverse edge, 2,3->bidirectional
+    //1 -> reverse edge, 2->bidirectional
+    //${1:0}
     vector <int> * ed;
-    vector <int> * rd;
-    graphal(int n, int rev=0){
-      this.n=n;
-      this.rev=rev;
+`!p
+if t[1]=="2":
+  snip.rv= "    vector <int> * rd;"
+else:
+  snip.rv=""
+`
+    graphal(int n){
+      this->n=n;
       ed = new vector<int>[n];
-      if(rev&1){
-        rd = new vector<int>[n];
-      }
+`!p
+if t[1]=="2":
+  snip.rv= "      rd = new vector<int>[n];"
+else:
+  snip.rv=""
+`
     }
     ~graphal(){
       delete[] ed;
-      if(rev&1){
-        delete[] rd;
-      }
+`!p
+if t[1]=="2":
+  snip.rv= "      delete[] rd;"
+else:
+  snip.rv=""
+`
     }
     void add(int a, int b){
       ed[a].push_back(b);
-      if(rev&1)rd[b].push_back(a);
-      if(rev>1)ed[b].push_back(a);
+`!p
+if t[1]=="1":
+  snip.rv= "      ed[b].push_back(a);"
+else:
+  snip.rv=""
+`
+`!p
+if t[1]=="2":
+  snip.rv= "      rd[b].push_back(a);"
+else:
+  snip.rv=""
+`
     }
 };
 endsnippet
@@ -142,5 +163,53 @@ class maxbpm {
     return mx;
   }
 };
+endsnippet
 
+snippet lca "least common ancestor"
+class lca {
+  const graphal *g;
+  static const int L=21;
+  int n, timer;
+  int *tin, *tout, **up, *h;
+  public:
+    lca(const graphal &g, const int &n){
+      this->g=&g;
+      this->n=n;
+      tin=new int[n]();
+      tout=new int[n]();
+      h=new int[n]();
+      up=new int*[n];
+      for(int i=0;i<n;i++)up[i]=new int[L]();
+      timer=0;
+    }
+    ~lca(){
+      delete[] tin;
+      delete[] tout;
+      delete[] h;
+      for(int i=0;i<n;i++)delete[] up[i];
+      delete[] up;
+    }
+    void dfs(int v=0, int p=0){
+      tin[v]=timer++;
+      up[v][0]=p;
+      for(int i=1;i<L;i++)up[v][i]=up[up[v][i-1]][i-1];
+      for(int i=0;i<g->ed[v].size();i++){
+        int to=g->ed[v][i];
+        if(to==p)continue;
+        h[to]=h[v]+1;
+        dfs(to,v);
+      }
+      tout[v]=timer++;
+    }
+    bool isa(int a, int b){ return (tin[a]<=tin[b] && tout[a]>=tout[b]); }
+    int getlca(int a, int b){
+      if(isa(a,b))return a;
+      if(isa(b,a))return b;
+      for(int i=L-1;i>=0;i--){
+        if(!isa(up[a][i],b))a=up[a][i];
+      }
+      return up[a][0];
+    }
+    int get_dist(int a, int b){ return h[a]+h[b]-2*h[getlca(a,b)]; }
+};
 endsnippet
