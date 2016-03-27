@@ -99,3 +99,48 @@ class toposort{
 };
 
 endsnippet
+
+snippet maxbpm "maximum bipartite matching"
+template <typename T>
+class maxbpm {
+  int nl,nr;
+  int *pr, *nx;
+  bool *seen;
+  const T *adj;
+  public:
+  maxbpm(int nl, int nr, const T &adj) {
+    this->nl=nl;
+    this->nr=nr;
+    this->adj=&adj;
+    nx=new int[nl];
+    pr=new int[nr];
+    seen=new bool[nl];
+  }
+
+  bool dfs(int u){
+    if(u==-1) return true;
+    if(seen[u]) return false;
+    seen[u]=true;
+    for(int v=0;v<nr;v++){
+      if(adj[u][v] && dfs(pr[v])){
+        pr[v]=u;
+        nx[u]=v;
+        return true;
+      }
+    }
+    return false;
+  }
+
+  int calc(){
+    int mx=0;
+    memset(pr,-1,sizeof(int)*nr);
+    memset(nx,-1,sizeof(int)*nl);
+    for(int u=0;u<nl;u++){
+      memset(seen,0,sizeof(int)*nl);
+      if(dfs(u)) mx++;
+    }
+    return mx;
+  }
+};
+
+endsnippet
