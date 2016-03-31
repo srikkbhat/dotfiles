@@ -5,47 +5,40 @@ class graphal
     int n;
     //1 -> reverse edge, 2->bidirectional
     //${1:0}
-    vector <int> * ed;
-`!p
+    vector <int> *ed`!p
 if t[1]=="2":
-  snip.rv= "    vector <int> * rd;"
+  snip.rv= ", *rd;"
 else:
-  snip.rv=""
+  snip.rv=";"
 `
-    graphal(int n){
+    graphal(const int &n){
       this->n=n;
-      ed = new vector<int>[n];
-`!p
+      ed = new vector<int>[n]; `!p
 if t[1]=="2":
-  snip.rv= "      rd = new vector<int>[n];"
+  snip.rv= "\n      rd = new vector<int>[n];"
 else:
   snip.rv=""
 `
     }
     ~graphal(){
-      delete[] ed;
-`!p
+      delete[] ed;`!p
 if t[1]=="2":
-  snip.rv= "      delete[] rd;"
+  snip.rv= "delete[] rd;"
 else:
   snip.rv=""
 `
     }
-    void add(int a, int b){
-      ed[a].push_back(b);
-`!p
+    void add(int a, int b){ ed[a].push_back(b);`!p
 if t[1]=="1":
-  snip.rv= "      ed[b].push_back(a);"
+  snip.rv= "ed[b].push_back(a);"
 else:
   snip.rv=""
-`
-`!p
+` `!p
 if t[1]=="2":
-  snip.rv= "      rd[b].push_back(a);"
+  snip.rv= "rd[b].push_back(a);"
 else:
   snip.rv=""
-`
-    }
+` }
 };
 endsnippet
 
