@@ -1,48 +1,42 @@
 snippet fenwicksum "range sum using fenwick"
 //fenwick class. index 1 to n for array of size n
 class fenwick {
-  ${1:int} * a;
-  int n;
+  ${1:int} * a; int n;
   public:
-  fenwick(int x){
-    n = x;
-    a = new $1[n+1];
-    memset(a,0,sizeof($1)*(n+1));
-  }
-  ~fenwick(){
-    delete[] a;
-  }
-
-  $1 getsum(int ix){
-    $1 ret=0;
-    for(int i=ix;i>0;i-=(i&(-i)))ret+=a[i];
-    return ret;
-  }
-
-  //sum from ixa to ixb both inclusive
-  int getsumbw(int ixa, int ixb){
-    return(getsum(ixb)-getsum(ixa-1));
-  }
-
-  //add val to ix
-  void add(int ix, $1 val) {
-    for(int i=ix;i<=n;i+=(i&(-i)))a[i]+=val;
-  }
-
-  //get value from index ix
+  fenwick(int x){ n = x; a = new $1[n+1]();}
+  ~fenwick(){ delete[] a; }
+  $1 getsum(int ix){ $1 ret=0; for(int i=ix;i>0;i-=(i&(-i)))ret+=a[i]; return ret; }
+  int getsumbw(int ia, int ib){ return(getsum(ib)-getsum(ia-1)); }
+  void add(int ix, $1 val) { for(int i=ix;i<=n;i+=(i&(-i)))a[i]+=val; }
   $1 getval(int ix){
     $1 ret = a[ix];
     if(ix>0) {
       int tmp = ix - (ix&(-ix));
       ix--;
-      while(ix!=tmp){
-        ret -= a[ix];
-        ix -= (ix&(-ix));
+      while(ix!=tmp){ ret -= a[ix]; ix -= (ix&(-ix));
       }
     }
     return ret;
   }
 };
+endsnippet
+snippet fenwickmax "range max using fenwick"
+class fenwick {
+  ${1:int} *a; $1 *v;int n;
+  public:
+  fenwick(int x){ n = x; a = new $1[n+1](); v=new $1[n+1](); }
+  ~fenwick(){ delete[] a;delete[] v; }
+  void set(int ix, $1 val) { if(v[ix]<val) {v[ix]=val;for(int i=ix;i<=n;i+=(i&(-i)))a[i]=max(a[i],val);}}
+  $1 getmax(int ix){ $1 ret=0; for(int i=ix;i>0;i-=(i&(-i)))ret=max(ret,a[i]); return ret; }
+  int getrangemax(int ia, int ib){ 
+    if(ia==ib)return v[ia];
+    int ix=ib-(ib&(-ib));
+    if(ix>=ia)return max(a[ib],getrangemax(ia,ix));
+    else return max(v[ib],getrangemax(ia,ib-1)); 
+  }
+  $1 getval(int ix){return v[ix];}
+};
+
 endsnippet
 
 snippet wordtree "form a tree using array of words"
