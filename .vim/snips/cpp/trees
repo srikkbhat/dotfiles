@@ -41,35 +41,28 @@ endsnippet
 
 snippet wordtree "form a tree using array of words"
 class wordtree {
-  int **t;
-  int *endix;
-  int ix;
-  int tx;
+  int **t, *endix, ix, tx;
+  static const char A='a';
+  static const int Z=0, O=1;
   public:
     wordtree(){
       t=new int*[MAXT];
       endix=new int[MAXT];
-
-      for(int i=0;i<MAXT;i++){
-        t[i]=new int[26];
-        for(int j=0;j<26;j++)t[i][j]=0;
-      }
-      memset(endix,-1,sizeof(endix));
-
-      ix=0;
-      tx=1;
+      for(int i=0;i<MAXT;i++)t[i]=new int[26]();
+      memset(endix,-1,sizeof(int)*MAXT);
+      ix=0;tx=1;
     }
-    void update(int tix,char* s){
-      if((*s)==0){
+    void update(const char* s, int tix=0){
+      if((*s)==Z){
         endix[tix]=ix;
         return;
       }
-      int c=(*s)-'a';
-      if(t[tix][c]==0)t[tix][c]=tx++;
-      update(t[tix][c],s+1);
+      int c=(*s)-A;
+      if(t[tix][c]==Z)t[tix][c]=tx++;
+      update(s+O,t[tix][c]);
     }
-    void addword(char* s){
-      update(0,s);
+    void addword(const char* s){
+      update(s);
       ix++;
     }
 };

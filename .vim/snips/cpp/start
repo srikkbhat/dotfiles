@@ -12,11 +12,10 @@ ${1:#define MODV 1000000007}
 typedef long long ll;
 typedef double dbl;
 typedef vector<int> vi;
-typedef pair<int, int> pi;
-`!p
+typedef pair<int, int> pi; `!p
 match = re.search("^#define", t[1])
 if match:
-  snip.rv = "void domod(int &a, ll b){a=(a+b)%MODV;}"
+  snip.rv = "\nvoid domod(int &a, ll b){a=(a+b)%MODV;}"
 else:
   snip.rv = ""
 `
