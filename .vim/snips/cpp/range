@@ -44,3 +44,23 @@ class rangesum{
 
 }
 endsnippet
+snippet sliding "sliding min / max"
+class slidingmin {
+  int l, r, n;
+  const ${1:int} *a;
+  typedef pair<$1,int> spi;
+  deque<spi> dq;
+  public:
+  slidingmin(const $1 *a, int n):n(n),l(-1),r(-1),a(a){}
+  $1 slide(int L, int R){ //0->n-1
+    assert(l<=L && r<=R && L<n && R<n);
+    for(int i=r+1;i<=R;i++){
+      while(!dq.empty() && dq.back().fi>=a[i])dq.pop_back();
+      dq.push_back(spi(a[i],i));
+    }
+    while(dq.front().se<L)dq.pop_front();
+    l=L,r=R;
+    return dq.front().fi;
+  }
+};
+endsnippet
