@@ -3,7 +3,7 @@ class graphal
 {
   public:
     int n;
-    //${1:0} 1 -> reverse edge, 2->bidirectional
+    //${1:0} 1->bidirectional, 2->reverse edges
     vector <int> *ed`!p
 if t[1]=="2":
   snip.rv= ", *rd;"
@@ -19,21 +19,16 @@ else:
   snip.rv=""
 `
     }
-    ~graphal(){
-      delete[] ed;`!p
+    ~graphal(){ delete[] ed;`!p
 if t[1]=="2":
   snip.rv= "delete[] rd;"
 else:
   snip.rv=""
-`
-    }
+` }
     void add(int a, int b){ ed[a].push_back(b);`!p
 if t[1]=="1":
   snip.rv= "ed[b].push_back(a);"
-else:
-  snip.rv=""
-` `!p
-if t[1]=="2":
+elif t[1]=="2":
   snip.rv= "rd[b].push_back(a);"
 else:
   snip.rv=""
@@ -46,34 +41,37 @@ class graphwal
 {
   public:
     int n;
-    //1,3 -> reverse edge, 2,3->bidirectional
-    int rev;
-    vector < vector <pair<int,${1:int}> > >  ed;
-    vector < vector <pair<int,$1> > > red;
-    graphwal(){
-      n=0;
-      rev=0;
-    }
+    //${1:0} 1->bidirectional, 2->reverse edges
+    typedef vector<pair<int,${2:int}>> vpi;
+    vpi *ed`!p
+if t[1]=="2":
+  snip.rv= ", *rd;"
+else:
+  snip.rv=";"
+`
     graphwal(int n){
-      this.n=n;
-      rev=0;
-      ed.resize(n);
+      this->n=n;
+      ed=new vpi[n];`!p
+if t[1]=="2":
+  snip.rv= "\n      rd=new vpi[n];"
+else:
+  snip.rv=""
+`
     }
-    graphwal(int n, int rev){
-      this.n = n;
-      this.rev = rev;
-      ed.resize(n);
-      if(rev&1) red.resize(n);
-    }
-    ~graphwal(){
-      ed.clear();
-      if(rev&1) red.clear();
-    }
-    void addEdge(int a, int b, $1 w){
-      ed[a].pb(mp(b,w));
-      if(rev>1)ed[b].pb(mp(a,w));
-      if(rev&1)red[b].pb(mp(a,w));
-    }
+    ~graphwal(){delete[] ed;`!p
+if t[1]=="2":
+  snip.rv= "delete[] rd;"
+else:
+  snip.rv=""
+`}
+    void addEdge(int a, int b, $2 w){ed[a].pb(mp(b,w));`!p
+if t[1]=="1":
+  snip.rv= "ed[b].pb(mp(a,w));"
+elif t[1]=="2":
+  snip.rv= "rd[b].pb(mp(a,w));"
+else:
+  snip.rv=""
+`}
 };
 endsnippet
 
@@ -85,7 +83,7 @@ class toposort{
     int n=g.n, ix, nx, *inc, *q, qb=0,qe=0;
     inc=new int[n](); q=new int[n+1](); ts.clear();
 
-    for(int i=0;i<n;i++) for(auto j:g.ed[i]){ inc[j]++; } 
+    for(int i=0;i<n;i++) for(auto j:g.ed[i]){ inc[j]++; }
 
     for(int i=0;i<n;i++)if(inc[i]==0)q[qe++]=i;
     while(qb<qe){
@@ -96,7 +94,7 @@ class toposort{
         if(inc[nx]==0)q[qe++]=nx;
       }
     }
-    delete[] q; delete[] inc; 
+    delete[] q; delete[] inc;
   }
 };
 
@@ -154,19 +152,13 @@ class lca {
   int *tin, *tout, **up, *h;
   public:
     lca(const graphal &g, const int &n){
-      this->g=&g;
-      this->n=n;
-      tin=new int[n]();
-      tout=new int[n]();
-      h=new int[n]();
-      up=new int*[n];
+      this->g=&g; this->n=n; timer=0;
+      tin=new int[n](); tout=new int[n]();
+      h=new int[n](); up=new int*[n];
       for(int i=0;i<n;i++)up[i]=new int[L]();
-      timer=0;
     }
     ~lca(){
-      delete[] tin;
-      delete[] tout;
-      delete[] h;
+      delete[] tin; delete[] tout; delete[] h;
       for(int i=0;i<n;i++)delete[] up[i];
       delete[] up;
     }
@@ -192,5 +184,54 @@ class lca {
       return up[a][0];
     }
     int get_dist(int a, int b){ return h[a]+h[b]-2*h[getlca(a,b)]; }
+};
+endsnippet
+
+snippet dijkstra "Dijkstra's shortest path algorithm"
+class dijkstra{
+  public:
+  typedef ${1:int} dt;
+  typedef pair<dt,int> pt;
+  int n, *pr, done;
+  dt *d;
+  bool *v;
+  const graphwal *g;
+  const static dt MAXV=${2:INT_MAX};
+  priority_queue<pt,vector<pt>,${3:greater<pt>}> h;
+  dijkstra(const graphwal &g){
+    this->g=&g; n=g.n;done=-1;
+    d=new dt[n]; pr=new int[n]; v=new bool[n];
+  }
+  ~dijkstra(){delete[] d;delete[] pr;delete[] v;}
+  void findall(int sr=0){
+    pt ret;
+    memset(v,false,sizeof(bool)*n);
+    memset(pr,-1,sizeof(int)*n);
+    for(auto i=0;i<n;i++)d[i]=MAXV;
+    d[sr]=0;
+    for(auto i:g->ed[sr]){
+      d[i.fi]=i.se;
+      h.push(pt(i.se,i.fi));
+    }
+    while(!h.empty()){
+      ret=h.top();
+      h.pop();
+      if(v[ret.se])continue;
+      v[ret.se]=true;
+      for(auto i:g->ed[ret.se]){
+        if(!v[i.fi] && d[i.fi]-i.se > ret.fi){
+          d[i.fi]=ret.fi+i.se;
+          pr[i.fi]=ret.se;
+          h.push(pt(d[i.fi],i.fi));
+        }
+      }
+    }
+    done=sr;
+  }
+  dt find(int tr, int sr=0){
+    if(done!=sr) findall(sr);
+    if(d[tr]==MAXV)return -1;
+    return d[tr];
+  }
 };
 endsnippet
