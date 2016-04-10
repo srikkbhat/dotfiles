@@ -136,7 +136,7 @@ class maxbpm {
     memset(pr,-1,sizeof(int)*nr);
     memset(nx,-1,sizeof(int)*nl);
     for(int u=0;u<nl;u++){
-      memset(seen,0,sizeof(int)*nl);
+      memset(seen,0,sizeof(bool)*nl);
       if(dfs(u)) mx++;
     }
     return mx;

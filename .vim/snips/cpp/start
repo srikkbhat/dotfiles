@@ -26,6 +26,42 @@ int main() {
 }
 endsnippet
 
+snippet gcjstart "google code jam  start program"
+#include <bits/stdc++.h>
+using namespace std;
+
+#define fi first
+#define se second
+#define pb push_back
+#define mp make_pair
+${1:#define MODV 1000000007}
+
+typedef long long ll;
+typedef double dbl;
+typedef vector<int> vi;
+typedef pair<int, int> pi; `!p
+match = re.search("^#define", t[1])
+if match:
+  snip.rv = "\nvoid domod(int &a, ll b){a=(a+b)%MODV;}"
+else:
+  snip.rv = ""
+`
+
+void doit() {
+  $0
+}
+
+int main() {
+  int tc;
+  scanf("%d",&tc);
+  for(int i=1;i<=tc;i++){
+    printf("Case #%d: ",i);
+    doit();
+  }
+  return 0;
+}
+endsnippet
+
 snippet usaco "uscao start program"
 /*
    ID: srikkbh1
