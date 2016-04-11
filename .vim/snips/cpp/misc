@@ -1,28 +1,14 @@
-snippet sorta "sort array"
-sort(${1:arr}, $1+${2:n});
-endsnippet
-
-snippet sortc "sort collection"
-sort(${1:vi}.begin(), $1.end());
-endsnippet
-
-snippet memset "array filling"
-memset(${1:arr},${2:0},sizeof($1));
-endsnippet
-
 snippet cnk "select k from n"
 ll cnk(int n, int k){
   // ${1:domod}
   if(n<k)return 0;
   ll ret=1, lln=(ll)n;
-  for(int i=1;i<=k;i++){
-`!p
+  for(int i=1;i<=k;i++){ `!p
 if t[1]=="domod":
-  snip.rv = "    ret = (ret*(lln-i+1)/i)%MODV;"
+  snip.rv = "ret = (ret*(lln-i+1)/i)%MODV;"
 else:
-  snip.rv = "    ret = ret*(lln-i+1)/i;"
-`
-  }
+  snip.rv = "ret = ret*(lln-i+1)/i;"
+` }
   return ret;
 }
 endsnippet

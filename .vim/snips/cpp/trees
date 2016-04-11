@@ -1,3 +1,39 @@
+snippet rangetree "range queries"
+template <typename T>
+class bitree{ //range max between two ix
+  const int n; const T *a; //inp array ix 0->n-1
+  T *t; //b tree
+  public:
+  bitree(const T& a, const int &n){
+    this->n=n; this->a = &a; t = new T[4*n]();
+  }
+  ~bitree(){ delete[] t; }
+  void build(){build(1,0,n-1);}
+  void build(int v, int l, int r){
+    if(l==r){ t[v] = a[l]; return; }
+    int mid = (l+r)/2, nv=v*2;
+    build(nv, l, mid); build(nv+1, mid+1, r);
+    t[v] = max(t[nv], t[nv+1]);
+  }
+  void update(int ix){update(ix,1,0,n-1);}
+  void update(int ix, int v, int l, int r){
+    if(l==r){ t[v]=a[ix]; return; }
+    int mid = (l+r)/2, nv=v*2;
+    if(ix<=mid) update(ix,nv,l,mid);
+    else update(ix,nv+1,mid+1,r);
+    t[v]=max(t[nv], t[nv+1]);
+  }
+  T query(int ql, int qr){return query(ql,qr,1,0,n-1);}
+  T query(int ql,int qr,int v,int L,int R){ //ql, qr inclusive
+    if(ql>R || qr<L)return 0;
+    if(ql<=L && qr>=R)return t[v];
+    int MID = (L+R)/2, nv=v*2;
+    T ans = max(query(ql,qr,nv,L,MID), query(ql,qr,nv+1,MID+1,R));
+    return ans;
+  }
+};
+endsnippet
+
 snippet fenwicksum "range sum using fenwick"
 //fenwick class. index 1 to n for array of size n
 class fenwick {
@@ -28,11 +64,11 @@ class fenwick {
   ~fenwick(){ delete[] a;delete[] v; }
   void set(int ix, $1 val) { if(v[ix]<val) {v[ix]=val;for(int i=ix;i<=n;i+=(i&(-i)))a[i]=max(a[i],val);}}
   $1 getmax(int ix){ $1 ret=0; for(int i=ix;i>0;i-=(i&(-i)))ret=max(ret,a[i]); return ret; }
-  int getrangemax(int ia, int ib){ 
+  int getrangemax(int ia, int ib){
     if(ia==ib)return v[ia];
     int ix=ib-(ib&(-ib));
     if(ix>=ia)return max(a[ib],getrangemax(ia,ix));
-    else return max(v[ib],getrangemax(ia,ib-1)); 
+    else return max(v[ib],getrangemax(ia,ib-1));
   }
   $1 getval(int ix){return v[ix];}
 };

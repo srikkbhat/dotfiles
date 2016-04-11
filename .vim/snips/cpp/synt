@@ -1,0 +1,230 @@
+snippet start "start program"
+#include <bits/stdc++.h>
+
+using namespace std;
+
+#define fi first
+#define se second
+#define pb push_back
+#define mp make_pair
+${1:#define MODV 1000000007}
+
+typedef long long ll;
+typedef double dbl;
+typedef vector<int> vi;
+typedef pair<int, int> pi; `!p
+match = re.search("^#define", t[1])
+if match:
+  snip.rv = "\nvoid domod(int &a, ll b){a=(a+b)%MODV;}"
+else:
+  snip.rv = ""
+`
+
+int main() {
+  $0
+  return 0;
+}
+endsnippet
+
+snippet gcjstart "google code jam  start program"
+#include <bits/stdc++.h>
+using namespace std;
+
+#define fi first
+#define se second
+#define pb push_back
+#define mp make_pair
+${1:#define MODV 1000000007}
+
+typedef long long ll;
+typedef double dbl;
+typedef vector<int> vi;
+typedef pair<int, int> pi; `!p
+match = re.search("^#define", t[1])
+if match:
+  snip.rv = "\nvoid domod(int &a, ll b){a=(a+b)%MODV;}"
+else:
+  snip.rv = ""
+`
+
+void doit() {
+  $0
+}
+
+int main() {
+  int tc;
+  scanf("%d",&tc);
+  for(int i=1;i<=tc;i++){
+    printf("Case #%d: ",i);
+    doit();
+  }
+  return 0;
+}
+endsnippet
+
+snippet usaco "uscao start program"
+/*
+   ID: srikkbh1
+   PROG: ${1:test}
+   LANG: C++11
+ */
+
+#include <bits/stdc++.h>
+
+using namespace std;
+
+#define fi first
+#define se second
+#define pb push_back
+#
+typedef pair<int, int> pi;
+typedef long long ll;
+typedef double dbl;
+typedef vector<int> vi;
+
+int main() {
+  FILE *fin = fopen("$1.in", "r");
+  FILE *fout=fopen("$1.out", "w");
+  int n;
+  fscanf(fin, "%d", &n);
+  fprintf(fout,"%d\n", n);
+  return 0;
+}
+endsnippet
+
+snippet testcases "test case loop"
+int $1;
+scanf("%d", &$1);
+for(int $2=0;$2<$1;$2++){
+  $0
+  doit();
+}
+endsnippet
+
+snippet for "for loop"
+for(auto ${1:i}=0;$1<${2:n};$1++){
+  $0
+}
+endsnippet
+
+snippet fordecrease "for loop decrement"
+for(auto ${1:i}=${2:n};$1>=0;$1--){
+  $0
+}
+endsnippet
+
+snippet forcontainers "for loop for map/set/vector etc"
+for(auto ${1:it}=${2:mp}.begin();$1!=$2.end();$1++){
+  $0
+}
+endsnippet
+
+snippet newforcont "for loop for map/set/vector etc"
+for(auto ${1:i}:${2:mp}){
+  $0
+}
+endsnippet
+
+snippet strdelimit "parse string using a delimiter"
+static const char DELIM[] = "$1"
+char * $2;
+
+$2 = strtok($3, DELIM);
+while( $2 != NULL){
+  $2 = strtok(NULL, DELIM);
+}
+endsnippet
+
+snippet strconv "convert char array to c++ string"
+string $1 = string($2);
+endsnippet
+
+snippet strrev "convert c++ string to char array"
+char * $1 = $2.c_str();
+endsnippet
+
+snippet dtostr "convert double to char array"
+char $1[$2];
+sprintf($1, "%0.2f", $3);
+endsnippet
+
+snippet lltostr "convert long long to char array"
+char $1[$2];
+sprintf($1, "%lld", $3);
+endsnippet
+
+snippet itostr "convert int to char array"
+char $1[$2];
+sprintf($1, "%d", $3);
+endsnippet
+
+snippet strtod "convert char array to double"
+double $1;
+$1 = strtod($2, NULL);
+endsnippet
+
+snippet strtomd "convert char array to many double"
+double $1;
+char * $2;
+$1 = strtod($3, &$2);
+$1 = strtod($2, NULL);
+endsnippet
+
+snippet strtoi "convert char array to int"
+int $1;
+$1 = (int) strtol($2, NULL, 10);
+endsnippet
+
+snippet strtomi "convert char array to many int"
+int $1;
+char * $2;
+$1 = (int) strtol($3, &$2, 10);
+$1 = (int) strtol($2, NULL, 10);
+endsnippet
+
+snippet strtoll "convert char array to long long"
+long long $1;
+$1 = strtoll($2, NULL, 10);
+endsnippet
+
+snippet strtomll "convert char array to many long long"
+long long $1;
+char * $2;
+$1 = strtoll($3, &$2, 10);
+$1 = strtoll($2, NULL, 10);
+endsnippet
+
+snippet scanint "scanf integer"
+int $1;
+scanf("%d", &$1);
+endsnippet
+
+snippet scanll "scanf long long"
+long long $1;
+scanf("%lld", &$1);
+endsnippet
+
+snippet scanstr "scanf string line"
+char $1[$2];
+scanf("%s", $1);
+endsnippet
+
+snippet scanuntileof "scanf until end of file"
+char $1[$2];
+while (scanf("%s", $1) != -1){
+  $0
+}
+endsnippet
+
+snippet sorta "sort array"
+sort(${1:arr}, $1+${2:n});
+endsnippet
+
+snippet sortc "sort collection"
+sort(${1:vi}.begin(), $1.end());
+endsnippet
+
+snippet memset "array filling"
+memset(${1:arr},${2:0},sizeof($1));
+endsnippet
+
