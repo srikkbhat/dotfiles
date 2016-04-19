@@ -36,6 +36,7 @@ else:
 };
 endsnippet
 
+
 snippet graphwal "weighted adjeceny list graph"
 class graphwal
 {
@@ -73,6 +74,18 @@ else:
   snip.rv=""
 `}
 };
+endsnippet
+
+snippet dfs "dfs on graphal or wal"
+    void dfs(int ix=0, int par=-1, int d=0){
+      bool leaf=true;
+      for(auto i:ed[ix])
+      if(i!=par){
+        leaf=false;
+        dfs(i,ix,d+1);
+      }
+      /* if(leaf); */
+    }
 endsnippet
 
 snippet toposort "topological sorting"
