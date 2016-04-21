@@ -33,6 +33,13 @@ elif t[1]=="2":
 else:
   snip.rv=""
 ` }
+    void load(int m){
+      int x,y;
+      for(int i=0;i<m;i++){
+        scanf("%d %d",&x,&y);
+        add(x-1,y-1);
+      } 
+    }
 };
 endsnippet
 
@@ -73,19 +80,46 @@ elif t[1]=="2":
 else:
   snip.rv=""
 `}
+    void load(int m){
+      int x,y;
+      $2 w;
+      for(int i=0;i<m;i++){
+        scanf("%d %d %d",&x,&y,&w);  
+        add(x-1,y-1,w);
+      }
+    }
 };
 endsnippet
 
 snippet dfs "dfs on graphal or wal"
-    void dfs(int ix=0, int par=-1, int d=0){
-      bool leaf=true;
-      for(auto i:ed[ix])
-      if(i!=par){
-        leaf=false;
-        dfs(i,ix,d+1);
-      }
-      /* if(leaf); */
+void dfs(int ix=0, int par=-1, int d=0){
+  bool leaf=true;
+  for(auto i:ed[ix])
+    if(i!=par){
+      leaf=false;
+      dfs(i,ix,d+1);
     }
+  /* if(leaf); */
+}
+endsnippet
+snippet disjoint "disjoint sets"
+class disjoint{
+  public:
+  int *p;
+  disjoint(int n):n(n){
+    p = new int[n];
+    memset(p,-1,sizeof(int)*n);
+  }
+  ~disjoint(){delete[] p;}
+  find(int ix){return p[ix]<0?ix:p[ix]=find(p[ix]);}
+  join(int a, int b){
+    if((a=find(a))==(b=find(b)))return;
+    if(p[a]<p[b])swap(a,b);
+    p[a]+=p[b];
+    p[b]=a;
+  }
+}
+
 endsnippet
 
 snippet toposort "topological sorting"
