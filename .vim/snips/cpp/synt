@@ -1,24 +1,23 @@
 snippet start "start program"
 #include <bits/stdc++.h>
-
+#include<ext/pb_ds/assoc_container.hpp>
+#include<ext/pb_ds/tree_policy.hpp>
+using namespace __gnu_pbds;
 using namespace std;
 
 #define fi first
 #define se second
 #define pb push_back
 #define mp make_pair
-${1:#define MODV 1000000007}
+#define MODV 1000000007
 
 typedef long long ll;
 typedef double dbl;
 typedef vector<int> vi;
-typedef pair<int, int> pi; `!p
-match = re.search("^#define", t[1])
-if match:
-  snip.rv = "\nvoid domod(int &a, ll b){a=(a+b)%MODV;}"
-else:
-  snip.rv = ""
-`
+typedef pair<int, int> pi;
+template <typename T>
+using ordered_set = tree<T, null_type, greater<T>, rb_tree_tag, tree_order_statistics_node_update>;
+void domod(int &a, ll b){a=(a+b)%MODV;}
 
 int main() {
   $0
@@ -28,24 +27,24 @@ endsnippet
 
 snippet startgcj "google code jam  start program"
 #include <bits/stdc++.h>
+#include<ext/pb_ds/assoc_container.hpp>
+#include<ext/pb_ds/tree_policy.hpp>
+using namespace __gnu_pbds;
 using namespace std;
 
 #define fi first
 #define se second
 #define pb push_back
 #define mp make_pair
-${1:#define MODV 1000000007}
+#define MODV 1000000007
 
 typedef long long ll;
 typedef double dbl;
 typedef vector<int> vi;
-typedef pair<int, int> pi; `!p
-match = re.search("^#define", t[1])
-if match:
-  snip.rv = "\nvoid domod(int &a, ll b){a=(a+b)%MODV;}"
-else:
-  snip.rv = ""
-`
+typedef pair<int, int> pi;
+template <typename T>
+using ordered_set = tree<T, null_type, greater<T>, rb_tree_tag, tree_order_statistics_node_update>;
+void domod(int &a, ll b){a=(a+b)%MODV;}
 
 void doit() {
   $0

@@ -31,3 +31,93 @@ class slidingrange {
   }
 };
 endsnippet
+snippet sqrtdecomp "square root decomposition"
+class sqrtdecomp{
+  typedef ${1:ll} dt;
+  static const int blocks=${2:713};
+  int n,updates,blockcount,*blocksize;
+  dt *a, *blockresult, **blockvals, *b;
+  public:
+  sqrtdecomp(int n, dt *a):n(n),a(a){
+    blockresult = new dt[blocks];
+    blocksize=new int[blocks];
+    b=new dt[n+5];
+    blockvals=new dt*[blocks];
+    for(auto i=0;i<blocks;i++){ blockvals[i]=new dt[blocks+blocks+5]; }
+  }
+  ~sqrtdecomp(){
+    delete [] blocksize,delete[] blockresult,delete[] b;
+    for(auto i=0;i<blocks;i++){ delete [] blockvals[i]; }
+    delete[] blockvals;
+  }
+  void build(){
+    blockcount=0;
+    for(auto i=0;i<n;i+=blocks){
+      int r=min(n,i+blocks);
+      blockresult[blockcount]=0;
+      blocksize[blockcount]=0;
+      for(int j=i;j<r;j++){
+        blockvals[blockcount][blocksize[blockcount]++]=a[j];
+        blockresult[blockcount]+=a[j];
+      }
+      blockcount++;
+    }
+    updates=0;
+  }
+  void rebuild(){
+    int bix=0;
+    for(auto i=0;i<blockcount;i++){
+      for(auto j=0;j<blocksize[i];j++){
+        b[bix++]=blockvals[i][j];
+      }
+    }
+    n=bix;
+    for(auto i=0;i<n;i++){ a[i]=b[i]; }
+    build();
+  }
+  void remove(int ix){
+    int tcnt=0;
+    for(auto i=0;i<blockcount && tcnt<=ix;i++){
+      tcnt+=blocksize[i];
+      if(tcnt>ix){
+        int bix=blocksize[i]-(tcnt-ix);
+        blockresult[i]-=blockvals[i][bix];
+        for(auto j=bix;j<blocksize[i]-1;j++){ blockvals[i][j]=blockvals[i][j+1]; }
+        blocksize[i]--;
+      }
+    }
+    return;
+  }
+  void insert(int ix, dt val){
+    int tcnt=0,i=0;
+    do{ //if ix > sum(blocksize[i]) then the update wont happen!!!!
+      tcnt+=blocksize[i];
+      if(tcnt>=ix){
+        int bix=blocksize[i]-(tcnt-ix);
+        blockresult[i]+=val;
+        for(auto j=blocksize[i];j>bix;j--){blockvals[i][j]=blockvals[i][j-1];}
+        blockvals[i][bix]=val;
+        blocksize[i]++;
+      }
+      i++;
+    }while(i<blockcount && tcnt<ix);
+    updates++;
+    if(updates>blocks)rebuild();
+    return;
+  }
+  dt query(int ix){
+    dt res=0;
+    int tcnt=0;
+    for(auto i=0;i<blockcount && tcnt<=ix;i++){
+      tcnt+=blocksize[i];
+      if(tcnt<=ix)res+=blockresult[i];
+      else{
+        int bix=blocksize[i]-(tcnt-ix);
+        for(auto j=0;j<=bix;j++){res+=blockvals[i][j];}
+      }
+    }
+    return res;
+  }
+  dt query(int lix, int rix){ return (rix>=lix)?query(rix)-query(lix-1):0; }
+};
+endsnippet
