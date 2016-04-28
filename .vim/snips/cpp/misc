@@ -26,3 +26,19 @@ ${1:int} lcm($1 a, $1 b){
   return (a/g)*b;
 }
 endsnippet
+
+snippet power "a to the power of b"
+int power(int a, int b) {
+  int res = 1;
+  while (b > 0) {
+    if (b & 1) { mulmod(res, a); }
+    b >>= 1;
+    mulmod(a, a);
+  }
+  return res;
+}
+endsnippet
+
+snippet inversemod "inverse mod of a number"
+int inv(int a) { return power(a, MODV - 2); }
+endsnippet

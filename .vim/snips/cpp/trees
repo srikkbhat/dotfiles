@@ -2,10 +2,12 @@ snippet rangetree "range queries"
 template <typename T>
 class bitree{ //range max between two ix
   const int n; const T *a; //inp array ix 0->n-1
-  T *t; //b tree
+  T *t, *upd; //b tree
+  bool *lz;
   public:
-  bitree(const T& a, const int &n){
-    this->n=n; this->a = &a; t = new T[4*n]();
+  bitree(const T *a, const int &n):n(n),a(a){
+    t = new T[4*n]();upd=new T[4*n]();lz=new bool[4*n];
+    for(int i=0;i<4*n;i++)lz[v]=false;
   }
   ~bitree(){ delete[] t; }
   void build(){build(1,0,n-1);}
@@ -15,10 +17,38 @@ class bitree{ //range max between two ix
     build(nv, l, mid); build(nv+1, mid+1, r);
     t[v] = max(t[nv], t[nv+1]);
   }
+  void trickledown(int v, int nv){
+    //update t[nv], t[nv+1], upd[nv], upd[nv+1]
+    upd[nv]=max(upd[nv],upd[v]);
+    upd[nv+1]=max(upd[nv+1],upd[v]);
+    tv[nv]=max(tv[nv],upd[v]);
+    tv[nv+1]=max(tv[nv+1],upd[v]);
+    lz[nv]=lz[nv+1]=true;
+    lz[v]=false; upd[v]=0;
+  }
+  void updaterange(int ql, int qr, T val){updaterange(ql,qr,val,1,0,n-1);}
+  void updaterange(int ql, int qr, T val, int v, int l, int r){
+    if(ql>qr)return;
+    if(qr>r || ql<l)return;
+    if(l==r){t[v]=val;return;}
+    if(ql<=l && qr>=r){
+      //update upd[v], t[v]
+      upd[v]=max(upd[v],val);
+      tv[v]=max(tv[v],val);
+      lz[v]=true;
+      return;
+    }
+    int mid = (l+r)/2, nv=v*2;
+    if(lz[v])trickledown(v,nv);
+    update(ql,qr,val,nv,l,mid);
+    update(ql,qr,val,nv+1,mid+1,r);
+    t[v]=max(t[nv], t[nv+1]);
+  }
   void update(int ix){update(ix,1,0,n-1);}
   void update(int ix, int v, int l, int r){
     if(l==r){ t[v]=a[ix]; return; }
     int mid = (l+r)/2, nv=v*2;
+    if(lz[v])trickledown(v,nv);
     if(ix<=mid) update(ix,nv,l,mid);
     else update(ix,nv+1,mid+1,r);
     t[v]=max(t[nv], t[nv+1]);
@@ -28,6 +58,7 @@ class bitree{ //range max between two ix
     if(ql>R || qr<L)return 0;
     if(ql<=L && qr>=R)return t[v];
     int MID = (L+R)/2, nv=v*2;
+    if(lz[v])trickledown(v,nv);
     T ans = max(query(ql,qr,nv,L,MID), query(ql,qr,nv+1,MID+1,R));
     return ans;
   }

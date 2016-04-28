@@ -51,12 +51,13 @@ class sqrtdecomp{
     delete[] blockvals;
   }
   void build(){
+    int r,i,j;
     blockcount=0;
-    for(auto i=0;i<n;i+=blocks){
-      int r=min(n,i+blocks);
+    for(i=0;i<n;i+=blocks){
+      r=min(n,i+blocks);
       blockresult[blockcount]=0;
       blocksize[blockcount]=0;
-      for(int j=i;j<r;j++){
+      for(j=i;j<r;j++){
         blockvals[blockcount][blocksize[blockcount]++]=a[j];
         blockresult[blockcount]+=a[j];
       }
@@ -65,37 +66,37 @@ class sqrtdecomp{
     updates=0;
   }
   void rebuild(){
-    int bix=0;
-    for(auto i=0;i<blockcount;i++){
-      for(auto j=0;j<blocksize[i];j++){
+    int bix=0,i,j;
+    for(i=0;i<blockcount;i++){
+      for(j=0;j<blocksize[i];j++){
         b[bix++]=blockvals[i][j];
       }
     }
     n=bix;
-    for(auto i=0;i<n;i++){ a[i]=b[i]; }
+    for(i=0;i<n;i++){ a[i]=b[i]; }
     build();
   }
   void remove(int ix){
-    int tcnt=0;
-    for(auto i=0;i<blockcount && tcnt<=ix;i++){
+    int tcnt=0,bix,i,j;
+    for(i=0;i<blockcount && tcnt<=ix;i++){
       tcnt+=blocksize[i];
       if(tcnt>ix){
-        int bix=blocksize[i]-(tcnt-ix);
+        bix=blocksize[i]-(tcnt-ix);
         blockresult[i]-=blockvals[i][bix];
-        for(auto j=bix;j<blocksize[i]-1;j++){ blockvals[i][j]=blockvals[i][j+1]; }
+        for(j=bix;j<blocksize[i]-1;j++){ blockvals[i][j]=blockvals[i][j+1]; }
         blocksize[i]--;
       }
     }
     return;
   }
   void insert(int ix, dt val){
-    int tcnt=0,i=0;
+    int tcnt=0,i=0,bix,j;
     do{ //if ix > sum(blocksize[i]) then the update wont happen!!!!
       tcnt+=blocksize[i];
       if(tcnt>=ix){
-        int bix=blocksize[i]-(tcnt-ix);
+        bix=blocksize[i]-(tcnt-ix);
         blockresult[i]+=val;
-        for(auto j=blocksize[i];j>bix;j--){blockvals[i][j]=blockvals[i][j-1];}
+        for(j=blocksize[i];j>bix;j--){blockvals[i][j]=blockvals[i][j-1];}
         blockvals[i][bix]=val;
         blocksize[i]++;
       }
@@ -107,13 +108,13 @@ class sqrtdecomp{
   }
   dt query(int ix){
     dt res=0;
-    int tcnt=0;
-    for(auto i=0;i<blockcount && tcnt<=ix;i++){
+    int tcnt=0,bix,i,j;
+    for(i=0;i<blockcount && tcnt<=ix;i++){
       tcnt+=blocksize[i];
       if(tcnt<=ix)res+=blockresult[i];
       else{
-        int bix=blocksize[i]-(tcnt-ix);
-        for(auto j=0;j<=bix;j++){res+=blockvals[i][j];}
+        bix=blocksize[i]-(tcnt-ix);
+        for(j=0;j<=bix;j++){res+=blockvals[i][j];}
       }
     }
     return res;

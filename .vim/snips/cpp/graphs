@@ -38,7 +38,7 @@ else:
       for(int i=0;i<m;i++){
         scanf("%d %d",&x,&y);
         add(x-1,y-1);
-      } 
+      }
     }
 };
 endsnippet
@@ -84,7 +84,7 @@ else:
       int x,y;
       $2 w;
       for(int i=0;i<m;i++){
-        scanf("%d %d %d",&x,&y,&w);  
+        scanf("%d %d %d",&x,&y,&w);
         add(x-1,y-1,w);
       }
     }
@@ -139,11 +139,12 @@ class disjoint{
   }
   ~disjoint(){delete[] p;}
   find(int ix){return p[ix]<0?ix:p[ix]=find(p[ix]);}
-  join(int a, int b){
-    if((a=find(a))==(b=find(b)))return;
+  bool join(int a, int b){
+    if((a=find(a))==(b=find(b)))return false;
     if(p[a]<p[b])swap(a,b);
     p[a]+=p[b];
     p[b]=a;
+    return true;
   }
 }
 
@@ -236,10 +237,15 @@ class lca {
       for(int i=0;i<n;i++)delete[] up[i];
       delete[] up;
     }
-    void dfs(int v=0, int p=0){
+    void dfs(int v=0, int p=-1){
+      int x;
       tin[v]=timer++;
       up[v][0]=p;
-      for(int i=1;i<L;i++)up[v][i]=up[up[v][i-1]][i-1];
+      for(int i=1;i<L;i++){
+        x=up[v][i-1];
+        if(x==-1)up[v][i]=-1;
+        else up[v][i]=up[x][i-1];
+      }
       for(int i=0;i<g->ed[v].size();i++){
         int to=g->ed[v][i];
         if(to==p)continue;
@@ -248,14 +254,14 @@ class lca {
       }
       tout[v]=timer++;
     }
-    bool isa(int a, int b){ return (tin[a]<=tin[b] && tout[a]>=tout[b]); }
+    bool isa(int a, int b){ return ((a==-1) || (tin[a]<=tin[b] && tout[a]>=tout[b]));}
     int getlca(int a, int b){
       if(isa(a,b))return a;
       if(isa(b,a))return b;
       for(int i=L-1;i>=0;i--){
         if(!isa(up[a][i],b))a=up[a][i];
       }
-      return up[a][0];
+      return up[a][0]==-1?a:up[a][0];
     }
     int get_dist(int a, int b){ return h[a]+h[b]-2*h[getlca(a,b)]; }
 };
