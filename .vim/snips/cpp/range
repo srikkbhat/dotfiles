@@ -19,6 +19,7 @@ class slidingrange {
   deque<spi> dq;
   public:
   slidingrange(const $1 *a, int n):n(n),l(-1),r(-1),a(a){}
+  ~slidingrange(){}
   $1 slide(int L, int R){ //0->n-1
     assert(l<=L && r<=R && L<n && R<n);
     for(int i=r+1;i<=R;i++){

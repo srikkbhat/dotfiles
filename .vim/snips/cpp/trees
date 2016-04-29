@@ -9,7 +9,7 @@ class bitree{ //range max between two ix
     t = new T[4*n]();upd=new T[4*n]();lz=new bool[4*n];
     for(int i=0;i<4*n;i++)lz[v]=false;
   }
-  ~bitree(){ delete[] t; }
+  ~bitree(){ delete[] t;delete[] lz;delete[] upd; }
   void build(){build(1,0,n-1);}
   void build(int v, int l, int r){
     if(l==r){ t[v] = a[l]; return; }
@@ -70,7 +70,7 @@ snippet fenwicksum "range sum using fenwick"
 class fenwick {
   ${1:int} * a; int n;
   public:
-  fenwick(int x){ n = x; a = new $1[n+1]();}
+  fenwick(int n):n(n){a = new $1[n+1]();}
   ~fenwick(){ delete[] a; }
   $1 getsum(int ix){ $1 ret=0; for(int i=ix;i>0;i-=(i&(-i)))ret+=a[i]; return ret; }
   int getsumbw(int ia, int ib){ return(getsum(ib)-getsum(ia-1)); }
@@ -91,7 +91,7 @@ snippet fenwickmax "range max using fenwick"
 class fenwick {
   ${1:int} *a; $1 *v;int n;
   public:
-  fenwick(int x){ n = x; a = new $1[n+1](); v=new $1[n+1](); }
+  fenwick(int n):n(n){a = new $1[n+1](); v=new $1[n+1](); }
   ~fenwick(){ delete[] a;delete[] v; }
   void set(int ix, $1 val) { if(v[ix]<val) {v[ix]=val;for(int i=ix;i<=n;i+=(i&(-i)))a[i]=max(a[i],val);}}
   $1 getmax(int ix){ $1 ret=0; for(int i=ix;i>0;i-=(i&(-i)))ret=max(ret,a[i]); return ret; }
@@ -112,13 +112,13 @@ class wordtree {
   static const char A='a';
   static const int Z=0, O=1;
   public:
-    wordtree(){
+    wordtree():ix(0),tx(1){
       t=new int*[MAXT];
       endix=new int[MAXT];
       for(int i=0;i<MAXT;i++)t[i]=new int[26]();
       memset(endix,-1,sizeof(int)*MAXT);
-      ix=0;tx=1;
     }
+    ~wordtree(){delete[] endix;for(int i=0;i<MAXT;i++)delete[] t[i];delete[] t;}
     void update(const char* s, int tix=0){
       if((*s)==Z){
         endix[tix]=ix;
@@ -133,4 +133,11 @@ class wordtree {
       ix++;
     }
 };
+endsnippet
+snippet policy "policy based structure"
+#include<ext/pb_ds/assoc_container.hpp>
+#include<ext/pb_ds/tree_policy.hpp>
+using namespace __gnu_pbds;
+template <typename T>
+using ordered_set = tree<T, null_type, less<T>, rb_tree_tag, tree_order_statistics_node_update>;
 endsnippet

@@ -10,8 +10,7 @@ if t[1]=="2":
 else:
   snip.rv=";"
 `
-    graphal(const int &n){
-      this->n=n;
+    graphal(const int &n):n(n){
       ed = new vector<int>[n]; `!p
 if t[1]=="2":
   snip.rv= "\n      rd = new vector<int>[n];"
@@ -57,8 +56,7 @@ if t[1]=="2":
 else:
   snip.rv=";"
 `
-    graphwal(int n){
-      this->n=n;
+    graphwal(int n):n(n){
       ed=new vpi[n];`!p
 if t[1]=="2":
   snip.rv= "\n      rd=new vpi[n];"
@@ -133,7 +131,7 @@ snippet disjoint "disjoint sets"
 class disjoint{
   public:
   int *p;
-  disjoint(int n):n(n){
+  disjoint(int n){
     p = new int[n];
     memset(p,-1,sizeof(int)*n);
   }
@@ -183,10 +181,7 @@ class maxbpm {
   bool *seen;
   const T *adj;
   public:
-  maxbpm(int nl, int nr, const T &adj) {
-    this->nl=nl;
-    this->nr=nr;
-    this->adj=&adj;
+  maxbpm(int nl, int nr, const T &adj):nl(nl),nr(nr),adj(&adj){
     nx=new int[nl];
     pr=new int[nr];
     seen=new bool[nl];
@@ -226,8 +221,8 @@ class lca {
   int n, timer;
   int *tin, *tout, **up, *h;
   public:
-    lca(const graphal &g, const int &n){
-      this->g=&g; this->n=n; timer=0;
+    lca(const graphal &g, const int &n):g(&g),n(n){
+      timer=0;
       tin=new int[n](); tout=new int[n]();
       h=new int[n](); up=new int*[n];
       for(int i=0;i<n;i++)up[i]=new int[L]();
@@ -246,11 +241,10 @@ class lca {
         if(x==-1)up[v][i]=-1;
         else up[v][i]=up[x][i-1];
       }
-      for(int i=0;i<g->ed[v].size();i++){
-        int to=g->ed[v][i];
-        if(to==p)continue;
-        h[to]=h[v]+1;
-        dfs(to,v);
+      for(auto i:g->ed[v])
+      if(i!=p){
+        h[i]=h[v]+1;
+        dfs(i,v);
       }
       tout[v]=timer++;
     }
@@ -263,7 +257,11 @@ class lca {
       }
       return up[a][0]==-1?a:up[a][0];
     }
-    int get_dist(int a, int b){ return h[a]+h[b]-2*h[getlca(a,b)]; }
+    int getdist(int a, int b){ return h[a]+h[b]-2*h[getlca(a,b)]; }
+    int go(int v, int len){
+      for(auto i=L-1;i>=0;i--)if(up[v][i]!=-1 && (len&(1<<i))){ v=up[v][i];}
+      return v;
+    }
 };
 endsnippet
 
@@ -278,8 +276,7 @@ class dijkstra{
   const graphwal *g;
   const static dt MAXV=${2:INT_MAX};
   priority_queue<pt,vector<pt>,${3:greater<pt>}> h;
-  dijkstra(const graphwal &g){
-    this->g=&g; n=g.n;done=-1;
+  dijkstra(const graphwal &g):g(&g),n(g.n),done(-1){
     d=new dt[n]; pr=new int[n]; v=new bool[n];
   }
   ~dijkstra(){delete[] d;delete[] pr;delete[] v;}
