@@ -5,9 +5,9 @@ class bitree{ //range max between two ix
   T *t, *upd; //b tree
   bool *lz;
   public:
-  bitree(const T *a, const int &n):n(n),a(a){
+  bitree(const T &a, const int &n):n(n),a(&a){
     t = new T[4*n]();upd=new T[4*n]();lz=new bool[4*n];
-    for(int i=0;i<4*n;i++)lz[v]=false;
+    for(int i=0;i<4*n;i++)lz[i]=false;
   }
   ~bitree(){ delete[] t;delete[] lz;delete[] upd; }
   void build(){build(1,0,n-1);}
@@ -21,8 +21,8 @@ class bitree{ //range max between two ix
     //update t[nv], t[nv+1], upd[nv], upd[nv+1]
     upd[nv]=max(upd[nv],upd[v]);
     upd[nv+1]=max(upd[nv+1],upd[v]);
-    tv[nv]=max(tv[nv],upd[v]);
-    tv[nv+1]=max(tv[nv+1],upd[v]);
+    t[nv]=max(t[nv],upd[v]);
+    t[nv+1]=max(t[nv+1],upd[v]);
     lz[nv]=lz[nv+1]=true;
     lz[v]=false; upd[v]=0;
   }
@@ -34,14 +34,14 @@ class bitree{ //range max between two ix
     if(ql<=l && qr>=r){
       //update upd[v], t[v]
       upd[v]=max(upd[v],val);
-      tv[v]=max(tv[v],val);
+      t[v]=max(t[v],val);
       lz[v]=true;
       return;
     }
     int mid = (l+r)/2, nv=v*2;
     if(lz[v])trickledown(v,nv);
-    update(ql,qr,val,nv,l,mid);
-    update(ql,qr,val,nv+1,mid+1,r);
+    updaterange(ql,qr,val,nv,l,mid);
+    updaterange(ql,qr,val,nv+1,mid+1,r);
     t[v]=max(t[nv], t[nv+1]);
   }
   void update(int ix){update(ix,1,0,n-1);}

@@ -1,6 +1,11 @@
 snippet start "start program"
 #include <bits/stdc++.h>
 using namespace std;
+#ifdef ONLINE_JUDGE
+#define LL "%I64d"
+#else
+#define LL "%lld"
+#endif
 
 #define fi first
 #define se second
@@ -15,6 +20,7 @@ typedef pair<int, int> pi;
 void domod(int &a, ll b){a=(a+b)%MODV;}
 void mulmod(int &a, ll b){a=(a*b)%MODV;}
 int getint(){int a;scanf("%d",&a);return a;}
+ll getll(){ll a;scanf(LL,&a);return a;}
 
 int main() {
   $0
@@ -39,6 +45,7 @@ typedef pair<int, int> pi;
 void domod(int &a, ll b){a=(a+b)%MODV;}
 void mulmod(int &a, ll b){a=(a*b)%MODV;}
 int getint(){int a;scanf("%d",&a);return a;}
+ll getll(){ll a;scanf("%lld",&a);return a;}
 
 void doit() {
   $0
@@ -74,6 +81,10 @@ typedef pair<int, int> pi;
 typedef long long ll;
 typedef double dbl;
 typedef vector<int> vi;
+void domod(int &a, ll b){a=(a+b)%MODV;}
+void mulmod(int &a, ll b){a=(a*b)%MODV;}
+int getint(){int a;scanf("%d",&a);return a;}
+ll getll(){ll a;scanf("%lld",&a);return a;}
 
 int main() {
   FILE *fin = fopen("$1.in", "r");
@@ -228,7 +239,7 @@ $0
 endsnippet
 
 snippet memset "array filling"
-memset(${1:a},${2:0},sizeof(${3:int})*${4:n});
+memset(${1:a},${2:0},sizeof(${3:int})${4:*n});
 $0
 endsnippet
 
