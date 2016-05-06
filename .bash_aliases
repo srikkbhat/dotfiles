@@ -11,7 +11,7 @@ alias sbrun='mvn spring-boot:run &'
 alias e='exit'
 alias bowup='bower update'
 alias gitue="git config user.email 'srikkbhat@gmail.com'"
-alias g11="g++ -g -std=c++11"
+alias g11="g++ -Wall -std=c++11 -static -DSRIKKHOME -s -O2"
 
 #docker shortcuts
 alias cddock='cd /mnt/home/gubuntu-docker'

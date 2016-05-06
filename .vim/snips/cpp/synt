@@ -1,12 +1,13 @@
 snippet start "start program"
 #include <bits/stdc++.h>
 using namespace std;
-#ifdef ONLINE_JUDGE
-#define LL "%I64d"
-#else
-#define LL "%lld"
-#endif
 
+//${1:0} 1->codeforces`!p
+if t[1]=="1":
+  snip.rv= "\n#ifdef ONLINE_JUDGE\n#define LL \"%I64d\"\n#else\n#define LL \"%lld\"\n#endif"
+else:
+  snip.rv="\n#define LL \"%lld\""
+`
 #define fi first
 #define se second
 #define pb push_back
@@ -17,7 +18,7 @@ typedef long long ll;
 typedef double dbl;
 typedef vector<int> vi;
 typedef pair<int, int> pi;
-void domod(int &a, ll b){a=(a+b)%MODV;}
+void addmod(int &a, ll b){a=(a+b); if(a>=MODV)a-=MODV;}
 void mulmod(int &a, ll b){a=(a*b)%MODV;}
 int getint(){int a;scanf("%d",&a);return a;}
 ll getll(){ll a;scanf(LL,&a);return a;}
@@ -42,7 +43,7 @@ typedef long long ll;
 typedef double dbl;
 typedef vector<int> vi;
 typedef pair<int, int> pi;
-void domod(int &a, ll b){a=(a+b)%MODV;}
+void addmod(int &a, ll b){a=(a+b); if(a>=MODV)a-=MODV;}
 void mulmod(int &a, ll b){a=(a*b)%MODV;}
 int getint(){int a;scanf("%d",&a);return a;}
 ll getll(){ll a;scanf("%lld",&a);return a;}
@@ -75,23 +76,24 @@ using namespace std;
 
 #define fi first
 #define se second
+#define mp make_pair
 #define pb push_back
-#
+#define MODV 1000000007
 typedef pair<int, int> pi;
 typedef long long ll;
 typedef double dbl;
 typedef vector<int> vi;
-void domod(int &a, ll b){a=(a+b)%MODV;}
+void addmod(int &a, ll b){a=(a+b); if(a>=MODV)a-=MODV;}
 void mulmod(int &a, ll b){a=(a*b)%MODV;}
 int getint(){int a;scanf("%d",&a);return a;}
 ll getll(){ll a;scanf("%lld",&a);return a;}
 
 int main() {
-  FILE *fin = fopen("$1.in", "r");
-  FILE *fout=fopen("$1.out", "w");
-  int n;
-  fscanf(fin, "%d", &n);
-  fprintf(fout,"%d\n", n);
+#ifndef SRIKKHOME
+  freopen("$1.in", "r",stdin);
+  freopen("$1.out", "w",stdout);
+#endif
+  $0
   return 0;
 }
 endsnippet
@@ -105,13 +107,13 @@ for(int ${2:i}=0;$2<$1;$2++){
 endsnippet
 
 snippet for "for loop"
-for(auto ${1:i}=${2:0};$1<${3:n};$1++){
+for(int ${1:i}=${2:0};$1<${3:n};$1++){
   $0
 }
 endsnippet
 
 snippet fordecrease "for loop decrement"
-for(auto ${1:i}=${2:n};$1>=0;$1--){
+for(int ${1:i}=${2:n};$1>=0;$1--){
   $0
 }
 endsnippet

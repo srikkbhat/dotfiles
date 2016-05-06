@@ -66,3 +66,28 @@ int cnp(int n, int k){
 }
 endsnippet
 
+snippet matrix "matrix operations"
+void roll(char &a, char &b, char &c, char &d){
+  int temp=a;
+  a=b; b=c; c=d; d=temp;
+}
+template <typename T>
+T rotate(T inp, int n){
+  T b=a;
+  for(int i=0;i<n/2; i++)
+  for(int j=0;j<(n+1)/2;j++){
+    roll(b[i][j],b[n-1-j][i],b[n-1-i][n-1-j],b[j][n-1-i]);
+
+  }
+  return b;
+}
+template <typename T>
+T reflect(T a, int n){
+  T b=a;
+  for(int i=0;i<n;i++){
+    for(int j=0;j<n/2;j++)swap(b[i][j],b[i][n-1-j]);
+  }
+  return b;
+}
+endsnippet
+
