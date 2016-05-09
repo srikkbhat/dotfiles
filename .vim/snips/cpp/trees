@@ -109,8 +109,6 @@ endsnippet
 snippet wordtree "form a tree using array of words"
 class wordtree {
   int **t, *endix, ix, tx;
-  static const char A='a';
-  static const int Z=0, O=1;
   public:
     wordtree():ix(0),tx(1){
       t=new int*[MAXT];
@@ -120,13 +118,13 @@ class wordtree {
     }
     ~wordtree(){delete[] endix;for(int i=0;i<MAXT;i++)delete[] t[i];delete[] t;}
     void update(const char* s, int tix=0){
-      if((*s)==Z){
+      if((*s)==0){
         endix[tix]=ix;
         return;
       }
-      int c=(*s)-A;
-      if(t[tix][c]==Z)t[tix][c]=tx++;
-      update(s+O,t[tix][c]);
+      int c=(*s)-'a';
+      if(t[tix][c]==0)t[tix][c]=tx++;
+      update(s+1,t[tix][c]);
     }
     void addword(const char* s){
       update(s);

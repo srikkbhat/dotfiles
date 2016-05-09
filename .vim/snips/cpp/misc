@@ -91,3 +91,26 @@ T reflect(T a, int n){
 }
 endsnippet
 
+snippet sieve "generate and find prime"
+bool prime[MAXN];
+vi pn;
+void sieve(){
+  memset(prime,true,sizeof(prime));
+  pn.clear();
+  prime[0]=prime[1]=false;
+  for(int i=2;i*i<=MAXN;i++)
+  if(prime[i]){
+    for(int j=i*i;j<MAXN;j+=i)prime[j]=false;
+  }
+  for(int i=2;i<MAXN;i++){
+    if(prime[i])pn.pb(i);
+  }
+}
+bool isprime(ll n){
+  if(n<MAXN)return prime[n];
+  for(size_t i=0;i<pn.size() && (ll)pn[i]*pn[i]<=n;i++){
+    if(n%pn[i]==0)return false;
+  }
+  return true;
+}
+endsnippet

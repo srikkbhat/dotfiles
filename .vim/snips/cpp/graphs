@@ -299,3 +299,49 @@ class dijkstra{
   }
 };
 endsnippet
+snippet prims "prim's algorithm for mst"
+class prims{
+  public:
+  typedef ll dt;
+  typedef pair<dt,int> pt;
+  int n, *pr;
+  dt *d;
+  bool *v;
+  const graphwal *g;
+  const static dt MAXV=LLONG_MAX;
+  priority_queue<pt,vector<pt>,greater<pt>> h;
+  prims(const graphwal &g):g(&g){ n=g.n; d=new dt[n]; pr=new int[n]; v=new bool[n]; }
+  ~prims(){delete[] d;delete[] pr;delete[] v;}
+  dt calc(int sr=0){
+    pt ret;
+    dt mst=0;
+    int nmst=0;
+    memset(v,false,sizeof(bool)*n);
+    memset(pr,-1,sizeof(int)*n);
+    for(auto i=0;i<n;i++)d[i]=MAXV;
+    d[sr]=0;
+    h.push(pt(0,sr));
+    while(!h.empty()){
+      ret=h.top();
+      h.pop();
+      if(v[ret.se])continue;
+      v[ret.se]=true;
+      mst+=ret.fi;
+      nmst++;
+      for(auto i:g->ed[ret.se]){
+        if(!v[i.fi] && d[i.fi] > i.se){
+          d[i.fi]=i.se;
+          pr[i.fi]=ret.se;
+          h.push(pt(d[i.fi],i.fi));
+        }
+      }
+    }
+    if(nmst!=n)return -1;
+    return mst;
+  }
+  bool inmst(int a, int b){
+    return (pr[a]==b || pr[b]==a);
+  }
+};
+
+endsnippet
