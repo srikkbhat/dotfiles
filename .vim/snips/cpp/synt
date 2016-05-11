@@ -12,6 +12,7 @@ else:
 #define se second
 #define pb push_back
 #define mp make_pair
+#define PN printf("\n")
 #define MODV 1000000007
 
 typedef long long ll;

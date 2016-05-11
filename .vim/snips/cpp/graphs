@@ -4,26 +4,18 @@ class graphal
   public:
     int n;
     //${1:0} 1->bidirectional, 2->reverse edges
-    vector <int> *ed`!p
+    vector<vector <int>> ed`!p
 if t[1]=="2":
-  snip.rv= ", *rd;"
+  snip.rv= ", rd;"
 else:
   snip.rv=";"
 `
-    graphal(const int &n):n(n){
-      ed = new vector<int>[n]; `!p
+    graphal(const int &n):n(n),ed(n)`!p
 if t[1]=="2":
-  snip.rv= "\n      rd = new vector<int>[n];"
+  snip.rv= ",rd(n)"
 else:
   snip.rv=""
-`
-    }
-    ~graphal(){ delete[] ed;`!p
-if t[1]=="2":
-  snip.rv= "delete[] rd;"
-else:
-  snip.rv=""
-` }
+`{}
     void add(int a, int b){ ed[a].push_back(b);`!p
 if t[1]=="1":
   snip.rv= "ed[b].push_back(a);"
@@ -36,7 +28,6 @@ else:
 };
 endsnippet
 
-
 snippet graphwal "weighted adjeceny list graph"
 class graphwal
 {
@@ -44,26 +35,18 @@ class graphwal
     int n;
     //${1:0} 1->bidirectional, 2->reverse edges
     typedef vector<pair<int,${2:int}>> vpi;
-    vpi *ed`!p
+    vector<vpi> ed`!p
 if t[1]=="2":
-  snip.rv= ", *rd;"
+  snip.rv= ",rd;"
 else:
   snip.rv=";"
 `
-    graphwal(int n):n(n){
-      ed=new vpi[n];`!p
+    graphwal(int n):n(n),ed(n)`!p
 if t[1]=="2":
-  snip.rv= "\n      rd=new vpi[n];"
+  snip.rv= ",rd(n)"
 else:
   snip.rv=""
-`
-    }
-    ~graphwal(){delete[] ed;`!p
-if t[1]=="2":
-  snip.rv= "delete[] rd;"
-else:
-  snip.rv=""
-`}
+`{}
     void add(int a, int b, $2 w){ed[a].pb(mp(b,w));`!p
 if t[1]=="1":
   snip.rv= "ed[b].pb(mp(a,w));"
@@ -87,6 +70,7 @@ void dfs(int ix=0, int par=-1, int d=0){
   /* if(leaf); */
 }
 endsnippet
+
 snippet diameter "get the diameter of a tree"
 int diameter(int &d, int ix=0, int par=-1){
   //${1:0} 0->all nodes 1->selected nodes
@@ -114,15 +98,12 @@ else:
   return mx;
 }
 endsnippet
+
 snippet disjoint "disjoint sets"
 class disjoint{
   public:
-  int *p;
-  disjoint(int n){
-    p = new int[n];
-    memset(p,-1,sizeof(int)*n);
-  }
-  ~disjoint(){delete[] p;}
+  vi p;
+  disjoint(int n):p(n,-1){}
   find(int ix){return p[ix]<0?ix:p[ix]=find(p[ix]);}
   bool join(int a, int b){
     if((a=find(a))==(b=find(b)))return false;
@@ -132,7 +113,6 @@ class disjoint{
     return true;
   }
 }
-
 endsnippet
 
 snippet toposort "topological sorting"
@@ -140,8 +120,9 @@ class toposort{
   public:
   vector<int> ts;
   toposort(graphal &g){
-    int n=g.n, ix, nx, *inc, *q, qb=0,qe=0;
-    inc=new int[n](); q=new int[n+1](); ts.clear();
+    int n=g.n, ix, nx, qb=0,qe=0;
+    vi inc(n,0), q(n+1,0);
+    ts.clear();
 
     for(int i=0;i<n;i++) for(auto j:g.ed[i]){ inc[j]++; }
 
@@ -154,25 +135,20 @@ class toposort{
         if(inc[nx]==0)q[qe++]=nx;
       }
     }
-    delete[] q; delete[] inc;
   }
 };
-
 endsnippet
 
 snippet maxbpm "maximum bipartite matching"
 template <typename T>
 class maxbpm {
   int nl,nr;
-  int *pr, *nx;
-  bool *seen;
-  const T *adj;
+  vi pr, nx;
+  vector<bool> seen;
+  const T &adj;
   public:
-  maxbpm(int nl, int nr, const T &adj):nl(nl),nr(nr),adj(&adj){
-    nx=new int[nl];
-    pr=new int[nr];
-    seen=new bool[nl];
-  }
+  maxbpm(int nl, int nr, const T &adj):
+    nl(nl),nr(nr),adj(adj),pr(nr,-1),nx(nl,-1),seen(nl){}
 
   bool dfs(int u){
     if(u==-1) return true;
@@ -190,8 +166,6 @@ class maxbpm {
 
   int calc(){
     int mx=0;
-    memset(pr,-1,sizeof(int)*nr);
-    memset(nx,-1,sizeof(int)*nl);
     for(int u=0;u<nl;u++){
       memset(seen,0,sizeof(bool)*nl);
       if(dfs(u)) mx++;
@@ -203,22 +177,16 @@ endsnippet
 
 snippet lca "least common ancestor"
 class lca {
-  const graphal *g;
+  const graphal &g;
   static const int L=21;
-  int n, timer;
-  int *tin, *tout, **up, *h;
+  const int n;
+  int timer;
+  vector<vi> up;
+  vi tin, tout, h;
   public:
-    lca(const graphal &g, const int &n):g(&g),n(n){
-      timer=0;
-      tin=new int[n](); tout=new int[n]();
-      h=new int[n](); up=new int*[n];
-      for(int i=0;i<n;i++)up[i]=new int[L]();
-    }
-    ~lca(){
-      delete[] tin; delete[] tout; delete[] h;
-      for(int i=0;i<n;i++)delete[] up[i];
-      delete[] up;
-    }
+    lca(const graphal &g, const int &n):
+      g(g),n(n),timer(0),tin(n,0),tout(n,0),h(n,0),
+      up(n,vi(L,0)){ }
     void dfs(int v=0, int p=-1){
       int x;
       tin[v]=timer++;
@@ -228,7 +196,7 @@ class lca {
         if(x==-1)up[v][i]=-1;
         else up[v][i]=up[x][i-1];
       }
-      for(auto i:g->ed[v])
+      for(auto i:g.ed[v])
       if(i!=p){
         h[i]=h[v]+1;
         dfs(i,v);
@@ -257,23 +225,23 @@ class dijkstra{
   public:
   typedef ${1:int} dt;
   typedef pair<dt,int> pt;
-  int n, *pr, done;
-  dt *d;
-  bool *v;
-  const graphwal *g;
+  int n, done;
+  vi pr;
+  vector<dt> d;
+  vector<bool> v;
+  const graphwal &g;
   const static dt MAXV=${2:INT_MAX};
   priority_queue<pt,vector<pt>,${3:greater<pt>}> h;
-  dijkstra(const graphwal &g):g(&g),n(g.n),done(-1){
-    d=new dt[n]; pr=new int[n]; v=new bool[n];
-  }
-  ~dijkstra(){delete[] d;delete[] pr;delete[] v;}
+  dijkstra(const graphwal &g):
+  g(g),n(g.n),done(-1),
+  d(n),pr(n),v(n){ }
   void findall(int sr=0){
     pt ret;
-    memset(v,false,sizeof(bool)*n);
-    memset(pr,-1,sizeof(int)*n);
-    for(auto i=0;i<n;i++)d[i]=MAXV;
+    fill(v.begin(),v.end(),false);
+    fill(pr.begin(),pr.end(),-1);
+    fill(d.begin(),d.end(),MAXV);
     d[sr]=0;
-    for(auto i:g->ed[sr]){
+    for(auto i:g.ed[sr]){
       d[i.fi]=i.se;
       h.push(pt(i.se,i.fi));
     }
@@ -282,7 +250,7 @@ class dijkstra{
       h.pop();
       if(v[ret.se])continue;
       v[ret.se]=true;
-      for(auto i:g->ed[ret.se]){
+      for(auto i:g.ed[ret.se]){
         if(!v[i.fi] && d[i.fi]-i.se > ret.fi){
           d[i.fi]=ret.fi+i.se;
           pr[i.fi]=ret.se;
@@ -299,26 +267,28 @@ class dijkstra{
   }
 };
 endsnippet
+
 snippet prims "prim's algorithm for mst"
 class prims{
   public:
   typedef ll dt;
   typedef pair<dt,int> pt;
-  int n, *pr;
-  dt *d;
-  bool *v;
-  const graphwal *g;
+  int n;
+  vi pr;
+  vector<dt> d;
+  vector<bool> v;
+  const graphwal &g;
   const static dt MAXV=LLONG_MAX;
   priority_queue<pt,vector<pt>,greater<pt>> h;
-  prims(const graphwal &g):g(&g){ n=g.n; d=new dt[n]; pr=new int[n]; v=new bool[n]; }
-  ~prims(){delete[] d;delete[] pr;delete[] v;}
+  prims(const graphwal &g):
+    n(g.n),g(g),d(n),pr(n),v(n){}
   dt calc(int sr=0){
     pt ret;
     dt mst=0;
     int nmst=0;
-    memset(v,false,sizeof(bool)*n);
-    memset(pr,-1,sizeof(int)*n);
-    for(auto i=0;i<n;i++)d[i]=MAXV;
+    fill(v.begin(),v.end(),false);
+    fill(pr.begin(),pr.end(),-1);
+    fill(d.begin(),d.end(),MAXV);
     d[sr]=0;
     h.push(pt(0,sr));
     while(!h.empty()){
@@ -328,7 +298,7 @@ class prims{
       v[ret.se]=true;
       mst+=ret.fi;
       nmst++;
-      for(auto i:g->ed[ret.se]){
+      for(auto i:g.ed[ret.se]){
         if(!v[i.fi] && d[i.fi] > i.se){
           d[i.fi]=i.se;
           pr[i.fi]=ret.se;
@@ -343,5 +313,4 @@ class prims{
     return (pr[a]==b || pr[b]==a);
   }
 };
-
 endsnippet
