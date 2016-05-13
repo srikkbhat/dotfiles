@@ -4,7 +4,7 @@ class graphal
   public:
     int n;
     //${1:0} 1->bidirectional, 2->reverse edges
-    vector<vector <int>> ed`!p
+    vector<vi> ed`!p
 if t[1]=="2":
   snip.rv= ", rd;"
 else:
@@ -104,7 +104,7 @@ class disjoint{
   public:
   vi p;
   disjoint(int n):p(n,-1){}
-  find(int ix){return p[ix]<0?ix:p[ix]=find(p[ix]);}
+  int find(int ix){return p[ix]<0?ix:p[ix]=find(p[ix]);}
   bool join(int a, int b){
     if((a=find(a))==(b=find(b)))return false;
     if(p[a]<p[b])swap(a,b);
@@ -118,7 +118,7 @@ endsnippet
 snippet toposort "topological sorting"
 class toposort{
   public:
-  vector<int> ts;
+  vi ts;
   toposort(graphal &g){
     int n=g.n, ix, nx, qb=0,qe=0;
     vi inc(n,0), q(n+1,0);

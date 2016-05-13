@@ -54,8 +54,7 @@ void doit() {
 }
 
 int main() {
-  int tc;
-  scanf("%d",&tc);
+  int tc=getint();
   for(int i=1;i<=tc;i++){
     printf("Case #%d: ",i);
     doit();
@@ -100,8 +99,7 @@ int main() {
 endsnippet
 
 snippet testcases "test case loop"
-int ${1:tc};
-scanf("%d", &$1);
+int ${1:tc}=getint();
 for(int ${2:i}=0;$2<$1;$2++){
   doit();
 }

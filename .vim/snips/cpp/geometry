@@ -1,3 +1,11 @@
 snippet dist "distance between two points"
-sqrt((${1:x1}-${2:x2})*($1-$2)+(${3:y1}-${4:y2})*($3-$4));
+${1:ll} dist(pi a, pi b){
+  ll x=a.fi-b.fi, y=a.se-b.se;
+  return `!p
+if t[1]=="ll":
+  snip.rv="x*x+y*y"
+else:
+  snip.rv="sqrt((dbl)(x*x+y*y))"
+`;
+}
 endsnippet
