@@ -24,7 +24,7 @@ elif t[1]=="2":
 else:
   snip.rv=""
 ` }
-    void load(int m){ for(int i=0;i<m;i++){ add(getint()-1,getint()-1); } }
+    void load(int m){ for(int i=0;i<m;i++){int a=getint(),b=getint();add(a-1,b-1);}}
 };
 endsnippet
 
@@ -55,17 +55,17 @@ elif t[1]=="2":
 else:
   snip.rv=""
 `}
-    void load(int m){ for(int i=0;i<m;i++){ add(getint()-1,getint()-1,getll()); } }
+    void load(int m){ for(int i=0;i<m;i++){int a=getint(),b=getint();ll w=getll();add(a-1,b-1,w);}}
 };
 endsnippet
 
 snippet dfs "dfs on graphal or wal"
-void dfs(int ix=0, int par=-1, int d=0){
+void dfs(int v=0, int pa=-1, int d=0){
   bool leaf=true;
-  for(auto i:ed[ix])
-    if(i!=par){
+  for(auto i:ed[v])
+    if(i!=pa){
       leaf=false;
-      dfs(i,ix,d+1);
+      dfs(i,v,d+1);
     }
   /* if(leaf); */
 }
@@ -112,7 +112,7 @@ class disjoint{
     p[b]=a;
     return true;
   }
-}
+};
 endsnippet
 
 snippet toposort "topological sorting"
