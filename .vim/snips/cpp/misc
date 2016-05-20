@@ -66,7 +66,7 @@ int cnp(int n, int k){
 }
 endsnippet
 
-snippet matrix "matrix operations"
+snippet matrix-ops "matrix operations"
 void roll(char &a, char &b, char &c, char &d){
   int temp=a;
   a=b; b=c; c=d; d=temp;
@@ -113,4 +113,34 @@ bool isprime(ll n){
   }
   return true;
 }
+endsnippet
+snippet matrix "matrix multiplication and exp"
+class mat{
+  typedef ${1:int} T;
+  typedef vector<vector<T>> M;
+  typedef vector<T> V;
+  public:
+  int r, c;
+  M m;
+  mat(const int &r, const int &c):r(r),c(c),m(r,V(c,0)){}
+  mat mul(const mat &other){
+    assert(c==other.r);
+    int rr=r, rc=other.c;
+    mat res(rr,rc);
+    for(int i=0;i<rr;i++)for(int j=0;j<rc;j++)
+    for(int k=0;k<c;k++)res.m[i][j]+=m[i][k]*other.m[k][j];
+    return res;
+  }
+  void pow(${2:int} b){
+    assert(r==c);
+    mat res(r,c);
+    for(int i=0;i<r;i++)res.m[i][i]=1;
+    while(b){
+      if(b&1)res=res.mul(*this);
+      *this=mul(*this);
+      b/=2;
+    }
+    m=move(res.m);
+  }
+};
 endsnippet
