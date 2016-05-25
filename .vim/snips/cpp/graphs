@@ -226,14 +226,14 @@ class dijkstra{
   typedef ${1:int} dt;
   typedef pair<dt,int> pt;
   int n, done;
-  vi pr;
-  vector<dt> d;
-  vector<bool> v;
   const graphwal &g;
+  vector<dt> d;
+  vi pr;
+  vector<bool> v;
   const static dt MAXV=${2:INT_MAX};
   priority_queue<pt,vector<pt>,${3:greater<pt>}> h;
   dijkstra(const graphwal &g):
-  g(g),n(g.n),done(-1),
+  n(g.n),done(-1),g(g),
   d(n),pr(n),v(n){ }
   void findall(int sr=0){
     pt ret;
@@ -274,10 +274,10 @@ class prims{
   typedef ll dt;
   typedef pair<dt,int> pt;
   int n;
-  vi pr;
-  vector<dt> d;
-  vector<bool> v;
   const graphwal &g;
+  vector<dt> d;
+  vi pr;
+  vector<bool> v;
   const static dt MAXV=LLONG_MAX;
   priority_queue<pt,vector<pt>,greater<pt>> h;
   prims(const graphwal &g):
@@ -314,6 +314,7 @@ class prims{
   }
 };
 endsnippet
+
 snippet hungarian "hungarian algo"
 class hungarian{
   static const int N=${1:105};
@@ -447,6 +448,7 @@ class hungarian{
   }
 };
 endsnippet
+
 snippet tarjan "tarjan algo for scc and bi vertex and bi edge"
 class tarjan {
   const graphwal &g;
@@ -507,4 +509,29 @@ class tarjan {
     return ans;
   }
 };
+endsnippet
+
+snippet floyd "all pair shortest path"
+for(int k=0;k<n;k++)
+for(int i=0;i<n;i++)
+for(int j=0;j<n;j++){if(d[i][j]>d[i][k]+d[k][j]) d[i][j]=d[i][k]+d[k][j];}
+endsnippet
+
+snippet bfsgraph "bfs on a graph"
+void bfs(int s=0){
+  int qb=0, qe=0, ix;
+  vector<int> q(n);
+  vector<${1:int}> ${2:d}(n);
+  fill($2.begin(),$2.end(),${3:INT_MAX});
+  $2[s]=0;
+  q[qe++]=s;
+  while(qb<qe){
+    ix=q[qb++];
+    for(auto i:ed[ix])
+      if($2[i]>$2[ix]+1){
+        $2[i]=$2[ix]+1;
+        q[qe++]=i;
+      }
+  }
+}
 endsnippet
