@@ -1,15 +1,12 @@
 snippet rangetree "range queries"
 template <typename T>
 class bitree{ //range max between two ix
-  const int n; const T *a; //inp array ix 0->n-1
-  T *t, *upd; //b tree
-  bool *lz;
+  const int &n; const vector<T> &a; //inp array ix 0->n-1
+  vector<T> t, upd; //b tree
+  vector<bool> lz;
   public:
-  bitree(const T &a, const int &n):n(n),a(&a){
-    t = new T[4*n]();upd=new T[4*n]();lz=new bool[4*n];
-    for(int i=0;i<4*n;i++)lz[i]=false;
-  }
-  ~bitree(){ delete[] t;delete[] lz;delete[] upd; }
+  bitree(const vector<T> &a, const int &n):
+    n(n),a(a),t(4*n),upd(4*n),lz(4*n,false){}
   void build(){build(1,0,n-1);}
   void build(int v, int l, int r){
     if(l==r){ t[v] = a[l]; return; }
@@ -67,16 +64,16 @@ endsnippet
 
 snippet fenwicksum "range sum using fenwick"
 //fenwick class. index 1 to n for array of size n
+template <typename T>
 class fenwick {
-  ${1:int} * a; int n;
+  int n;vector<T> a;
   public:
-  fenwick(int n):n(n){a = new $1[n+1]();}
-  ~fenwick(){ delete[] a; }
-  $1 getsum(int ix){ $1 ret=0; for(int i=ix;i>0;i-=(i&(-i)))ret+=a[i]; return ret; }
-  int getsumbw(int ia, int ib){ return(getsum(ib)-getsum(ia-1)); }
-  void add(int ix, $1 val) { for(int i=ix;i<=n;i+=(i&(-i)))a[i]+=val; }
-  $1 getval(int ix){
-    $1 ret = a[ix];
+  fenwick(int n):n(n),a(n+1,0){}
+  T getsum(int ix){ T ret=0; for(int i=ix;i>0;i-=(i&(-i)))ret+=a[i]; return ret; }
+  T getsumbw(int ia, int ib){ return(getsum(ib)-getsum(ia-1)); }
+  void add(int ix, T val) { for(int i=ix;i<=n;i+=(i&(-i)))a[i]+=val; }
+  T getval(int ix){
+    T ret = a[ix];
     if(ix>0) {
       int tmp = ix - (ix&(-ix));
       ix--;
@@ -87,36 +84,34 @@ class fenwick {
   }
 };
 endsnippet
+
 snippet fenwickmax "range max using fenwick"
+template <typename T>
 class fenwick {
-  ${1:int} *a; $1 *v;int n;
+  int n;vector<T> a; vecto<T> v;
   public:
-  fenwick(int n):n(n){a = new $1[n+1](); v=new $1[n+1](); }
-  ~fenwick(){ delete[] a;delete[] v; }
-  void set(int ix, $1 val) { if(v[ix]<val) {v[ix]=val;for(int i=ix;i<=n;i+=(i&(-i)))a[i]=max(a[i],val);}}
-  $1 getmax(int ix){ $1 ret=0; for(int i=ix;i>0;i-=(i&(-i)))ret=max(ret,a[i]); return ret; }
-  int getrangemax(int ia, int ib){
+  fenwick(int n):n(n),a(n+1),v(n+1){}
+  void set(int ix, T val) { if(v[ix]<val) {v[ix]=val;for(int i=ix;i<=n;i+=(i&(-i)))a[i]=max(a[i],val);}}
+  T getmax(int ix){ $1 ret=0; for(int i=ix;i>0;i-=(i&(-i)))ret=max(ret,a[i]); return ret; }
+  T getrangemax(int ia, int ib){
     if(ia==ib)return v[ia];
     int ix=ib-(ib&(-ib));
     if(ix>=ia)return max(a[ib],getrangemax(ia,ix));
     else return max(v[ib],getrangemax(ia,ib-1));
   }
-  $1 getval(int ix){return v[ix];}
+  T getval(int ix){return v[ix];}
 };
-
 endsnippet
 
 snippet wordtree "form a tree using array of words"
 class wordtree {
+  int ix, tx;
+  vector<vi> t;
+  vi endix;
   int **t, *endix, ix, tx;
   public:
-    wordtree():ix(0),tx(1){
-      t=new int*[MAXT];
-      endix=new int[MAXT];
-      for(int i=0;i<MAXT;i++)t[i]=new int[26]();
-      memset(endix,-1,sizeof(int)*MAXT);
-    }
-    ~wordtree(){delete[] endix;for(int i=0;i<MAXT;i++)delete[] t[i];delete[] t;}
+    wordtree():
+      ix(0),tx(1),t(MAXT,vi(26,0)),endix(MAXT,-1){}
     void update(const char* s, int tix=0){
       if((*s)==0){
         endix[tix]=ix;
@@ -132,6 +127,7 @@ class wordtree {
     }
 };
 endsnippet
+
 snippet policy "policy based structure"
 #include<ext/pb_ds/assoc_container.hpp>
 #include<ext/pb_ds/tree_policy.hpp>

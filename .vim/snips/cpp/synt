@@ -21,8 +21,8 @@ typedef vector<int> vi;
 typedef pair<int, int> pi;
 void addmod(int &a, ll b){a=(a+b); if(a>=MODV)a-=MODV;}
 void mulmod(int &a, ll b){a=(a*b)%MODV;}
-int getint(){int a;scanf("%d",&a);return a;}
-ll getll(){ll a;scanf(LL,&a);return a;}
+int gi(){int a;scanf("%d",&a);return a;}
+ll gll(){ll a;scanf(LL,&a);return a;}
 
 int main() {
   $0
@@ -46,15 +46,15 @@ typedef vector<int> vi;
 typedef pair<int, int> pi;
 void addmod(int &a, ll b){a=(a+b); if(a>=MODV)a-=MODV;}
 void mulmod(int &a, ll b){a=(a*b)%MODV;}
-int getint(){int a;scanf("%d",&a);return a;}
-ll getll(){ll a;scanf("%lld",&a);return a;}
+int gi(){int a;scanf("%d",&a);return a;}
+ll gll(){ll a;scanf("%lld",&a);return a;}
 
 void doit() {
   $0
 }
 
 int main() {
-  int tc=getint();
+  int tc=gi();
   for(int i=1;i<=tc;i++){
     printf("Case #%d: ",i);
     doit();
@@ -86,8 +86,8 @@ typedef double dbl;
 typedef vector<int> vi;
 void addmod(int &a, ll b){a=(a+b); if(a>=MODV)a-=MODV;}
 void mulmod(int &a, ll b){a=(a*b)%MODV;}
-int getint(){int a;scanf("%d",&a);return a;}
-ll getll(){ll a;scanf("%lld",&a);return a;}
+int gi(){int a;scanf("%d",&a);return a;}
+ll gll(){ll a;scanf("%lld",&a);return a;}
 
 int main() {
 #ifndef SRIKKHOME
@@ -100,7 +100,7 @@ int main() {
 endsnippet
 
 snippet testcases "test case loop"
-int ${1:tc}=getint();
+int ${1:tc}=gi();
 for(int ${2:i}=0;$2<$1;$2++){doit();}
 endsnippet
 
@@ -198,7 +198,7 @@ $1 = strtoll($2, NULL, 10);
 endsnippet
 
 snippet scanarray "scanf array"
-for(auto ${1:i}=0;$1<${2:n};$1++){ ${3:a}[$1]=${4:getint()}; }
+for(auto ${1:i}=0;$1<${2:n};$1++){ ${3:a}[$1]=${4:gi()}; }
 $0
 endsnippet
 

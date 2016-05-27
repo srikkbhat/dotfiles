@@ -24,7 +24,7 @@ elif t[1]=="2":
 else:
   snip.rv=""
 ` }
-    void load(int m){ for(int i=0;i<m;i++){int a=getint(),b=getint();add(a-1,b-1);}}
+    void load(int m){ for(int i=0;i<m;i++){int a=gi(),b=gi();add(a-1,b-1);}}
 };
 endsnippet
 
@@ -55,7 +55,7 @@ elif t[1]=="2":
 else:
   snip.rv=""
 `}
-    void load(int m){ for(int i=0;i<m;i++){int a=getint(),b=getint();ll w=getll();add(a-1,b-1,w);}}
+    void load(int m){ for(int i=0;i<m;i++){int a=gi(),b=gi();ll w=gll();add(a-1,b-1,w);}}
 };
 endsnippet
 
