@@ -108,7 +108,6 @@ class wordtree {
   int ix, tx;
   vector<vi> t;
   vi endix;
-  int **t, *endix, ix, tx;
   public:
     wordtree():
       ix(0),tx(1),t(MAXT,vi(26,0)),endix(MAXT,-1){}
