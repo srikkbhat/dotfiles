@@ -535,3 +535,34 @@ void bfs(int s=0){
   }
 }
 endsnippet
+snippet eulertour "euler tour of a graph"
+void eulerdfs(int ix){
+  if(ed[ix].empty()){
+    ans.pb(ix);
+    return;
+  }
+  while(!ed[ix].empty()){
+    int nix=*ed[ix].begin();
+    ed[ix].erase(ed[ix].begin());
+    auto it=ed[nix].find(ix);
+    assert(it!=ed[nix].end());
+    ed[nix].erase(it);
+    eulerdfs(nix);
+  }
+  ans.pb(ix);
+}
+void eulertour(){
+  //ed[ix] preferred as multiset
+  bool done=false;
+  ans.clear();
+  for(int i=0;i<n;i++) if(ed[i].size()&1){
+    eulerdfs(i);
+    done=true;
+  }
+  if(!done)for(int i=0;i<n;i++) if(ed[i].size()>0){ eulerdfs(i); }
+  for(int i=ans.size()-1;i>=0;i--){
+    printf("%d\n",ans[i]);
+
+  }
+}
+endsnippet
