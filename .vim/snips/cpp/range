@@ -1,15 +1,13 @@
 snippet rangesum "sum of array ranges"
 class rangesum{
-  ${1:ll} * sum;
+  vector<${1:ll}> s;
   public:
-    rangesum(const ${2:int} *inp, const int &n){ //ix 0->n-1
-      sum=new $1[n+1]();
+    rangesum(const vector<${2:int}> &inp, const int &n){ //ix 0->n-1
+      s.resize(n+1);
       for(int i=0;i<n;i++) s[i+1]=s[i]+inp[i];
     }
-    ~rangesum() {delete [] sum;}
     $1 get(int x, int y) {return s[y+1]-s[x];} //y>=x, x,y inclusive
-
-}
+};
 endsnippet
 snippet sliding "sliding min / max"
 class slidingrange {
