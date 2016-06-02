@@ -59,6 +59,39 @@ else:
 };
 endsnippet
 
+snippet graphed "graph with edges stored seperately"
+template<class T>
+class edge{
+  public:
+    int a, b;
+    T cap, flow;
+    edge(const int &a, const int &b, const T &cap, T flow=0):
+      a(a),b(b),cap(cap),flow(flow){}
+};
+
+template<class T>
+class graphed {
+  public:
+  int n;
+  vector<vi> e;
+  vector<edge<T>> edges;
+  graphed(int n):n(n),e(n){}
+  void add(const int &s, const int &d, const T &cap){
+    assert((s>=0)&&(d>=0)&&(s<n)&&(d<n));
+    e[s].pb(edges.size());
+    edges.pb({s,d,cap});
+  }
+  void resize(int n){this->n=n;e.resize(n);}
+  void load(int m){
+    int a,b;T cap;
+    for(int i=0;i<m;i++){
+      a=gi()-1, b=gi()-1,cap=gll();
+      add(a,b,cap);
+    }
+  }
+};
+endsnippet
+
 snippet dfs "dfs on graphal or wal"
 void dfs(int v=0, int pa=-1, int d=0){
   bool leaf=true;
@@ -566,3 +599,92 @@ void eulertour(){
   }
 }
 endsnippet
+
+snippet flow "flow network using priority q"
+//T should be signed.
+template<class T>
+class flow{
+  typedef pair<int,T> pqdt;
+  typedef vector<T> vt;
+  typedef graphed<T> fgraph;
+  typedef edge<T> fedge;
+  public:
+  int n, ssourcev, ssinkv;
+  fgraph &g;
+  flow(const int &n, fgraph &g):n(n),g(g){}
+
+  void addedge(const int &s, const int &d, const T &cap){ g.add(s,d,cap); g.add(d,s,0); }
+  void load(int m){
+    int a,b;T cap;
+    for(int i=0;i<m;i++){
+      a=gi()-1, b=gi()-1,cap=gll();
+      addedge(a,b,cap);
+    }
+  }
+  void addssedge(const int &v, const T &cap, bool issource=true){
+    static bool source=false, sink=false;
+    if(issource && !source){
+      source=true;
+      ssourcev=n;
+      g.resize(++n);
+    }
+    if(!issource && !sink){
+      sink=true;
+      ssinkv=n;
+      g.resize(++n);
+    }
+    if(issource)addedge(ssourcev,v,cap);
+    else addedge(v,ssinkv,cap);
+  }
+  T augment(int source, int sink){
+    const T MAXV = numeric_limits<T>::max();
+    vt d(n,0);
+    vi pr(n,-1);
+    priority_queue<pqdt> q;
+    d[source]=MAXV;
+    q.push({MAXV,source});
+    int cur=-1;
+    T dist,res;
+    while(!q.empty() && cur!=sink){
+      dist=q.top().fi;
+      cur=q.top().se;
+      q.pop();
+      if(dist!=d[cur])continue;
+      if(cur==sink)continue;
+      for(auto i:g.e[cur]){
+        const fedge &e=g.edges[i];
+        T td=min(dist,e.cap-e.flow);
+        if(td>d[e.b]){
+          d[e.b]=td;
+          pr[e.b]=i;
+          q.push({td,e.b});
+        }
+      }
+    }
+    if(d[sink]==0)return 0;
+    res=d[sink];
+    cur=sink;
+    while(cur!=source){
+      int eix=pr[cur];
+      assert(eix>=0);
+      fedge &ed = g.edges[eix];
+      fedge &red = g.edges[eix^1];
+      assert(cur==ed.b);
+      ed.flow+=res;
+      red.flow-=res;
+      cur=ed.a;
+    }
+    return res;
+  }
+  T calc(){return calc(ssourcev,ssinkv);}
+  T calc(int source, int sink){
+    assert((source>=0)&&(sink>=0)&&(source<n)&&(sink<n));
+    for(auto &i:g.edges){i.flow = 0;}
+    T res=0;
+    T up;
+    while((up=augment(source,sink))!=0)res+=up;
+    return res;
+  }
+};
+endsnippet
+
