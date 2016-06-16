@@ -2,10 +2,66 @@ snippet dist "distance between two points"
 ${1:ll} dist(pi a, pi b){
   ll x=a.fi-b.fi, y=a.se-b.se;
   return `!p
-if t[1]=="ll":
-  snip.rv="x*x+y*y"
-else:
-  snip.rv="sqrt((dbl)(x*x+y*y))"
-`;
+    if t[1]=="ll":
+      snip.rv="x*x+y*y"
+    else:
+      snip.rv="sqrt((dbl)(x*x+y*y))"
+        `;
 }
+endsnippet
+snippet line "line"
+struct line {
+  typedef int dt;
+  dt a, b;
+  line(){}
+  line(dt a,dt b):a(a),b(b){}
+  dbl intersect(const line& l) const {
+    assert(a != l.a);
+    return (dbl) (l.b-b)/(a-l.a);
+  }
+  void set(dt a,dt b){this->a=a,this->b=b;}
+  ll get(ll x){return a*x+b;}
+};
+endsnippet
+snippet convexhullt "convex hull trick"
+class hull{
+  typedef int dt;
+  bool mx;
+  vector<line> vl, st;
+  vector<dbl> xi;
+  void push(const line &l) {
+    dbl newx=-INF;
+    while (!st.empty()) {
+      const line& l1 = st.back();
+
+      if  (l1.a == l.a) return;
+
+      newx = l1.intersect(l);
+      if (newx<xi.back()+EPS) {
+        st.pop_back();
+        xi.pop_back();
+      } else break;
+    }
+    st.pb(l);
+    xi.pb(newx);
+  }
+  public:
+  hull(bool mx=false):mx(mx){}
+  void add(dt a, dt b){vl.pb(line(a,b));}
+  void precalc(){
+    static auto cmp = [this](line &a, line &b){
+      if(a.a!=b.a)return mx?a.a<b.a:a.a>b.a;
+      return mx?a.b>b.b:a.b<b.b;
+    };
+    if(vl.empty())return;
+    st.clear(), xi.clear();
+    sort(vl.begin(),vl.end(),cmp);
+    for(auto a:vl)push(a);
+  }
+  ll get(dt x){
+    if(st.empty())return -INF;
+    int i= upper_bound(xi.begin(),xi.end(),x) - xi.begin() - 1;
+    return st[i].get(x);
+  }
+};
 endsnippet

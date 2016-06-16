@@ -104,71 +104,81 @@ void dfs(int v=0, int pa=-1, int d=0){
 }
 endsnippet
 
+snippet dfspreorder "preorder indexing dfs on graphal or wal"
+void dfspreorder(int v=0, int pa=-1){
+  static int ix=0;
+  pre[ix++]=v;
+  up[v]=pa;
+  for(auto i:ed[v]) if(i.fi!=pa){ dfspreorder(i.fi,v); }
+}
+endsnippet
+
+
 snippet diameter "get the diameter of a tree"
 int diameter(int &d, int ix=0, int par=-1){
   //${1:0} 0->all nodes 1->selected nodes
   int mx=`!p
-if t[1]=="1":
-  snip.rv="-1"
-else:
-  snip.rv="0"
-`,mx2=-1,cur;`!p
-if t[1]=="1":
-  snip.rv="\n  if(selected[ix])mx=0;"
-`
-  for(auto i:ed[ix])
-  if(i!=par){
-    cur=diameter(d,i,ix);
-    if(cur>mx){mx2=mx;mx=cur;}else if(cur>mx2)mx2=cur;
-  }
+    if t[1]=="1":
+      snip.rv="-1"
+    else:
+      snip.rv="0"
+        `,mx2=-1,cur;`!p
+        if t[1]=="1":
+          snip.rv="\n  if(selected[ix])mx=0;"
+            `
+            for(auto i:ed[ix])
+              if(i!=par){
+                cur=diameter(d,i,ix);
+                if(cur>mx){mx2=mx;mx=cur;}else if(cur>mx2)mx2=cur;
+              }
   if(mx2!=-1)d=max(d,mx+mx2);
-`!p
-if t[1]=="1":
-  snip.rv="  if(selected[ix] || mx>0)mx++;"
-else:
-  snip.rv="  mx++;"
-`
-  return mx;
+  `!p
+    if t[1]=="1":
+      snip.rv="  if(selected[ix] || mx>0)mx++;"
+    else:
+      snip.rv="  mx++;"
+        `
+        return mx;
 }
 endsnippet
 
 snippet disjoint "disjoint sets"
 class disjoint{
   public:
-  vi p;
-  disjoint(int n):p(n,-1){}
-  int find(int ix){return p[ix]<0?ix:p[ix]=find(p[ix]);}
-  bool join(int a, int b){
-    if((a=find(a))==(b=find(b)))return false;
-    if(p[a]<p[b])swap(a,b);
-    p[a]+=p[b];
-    p[b]=a;
-    return true;
-  }
+    vi p;
+    disjoint(int n):p(n,-1){}
+    int find(int ix){return p[ix]<0?ix:p[ix]=find(p[ix]);}
+    bool join(int a, int b){
+      if((a=find(a))==(b=find(b)))return false;
+      if(p[a]<p[b])swap(a,b);
+      p[a]+=p[b];
+      p[b]=a;
+      return true;
+    }
 };
 endsnippet
 
 snippet toposort "topological sorting"
 class toposort{
   public:
-  vi ts;
-  toposort(graphal &g){
-    int n=g.n, ix, nx, qb=0,qe=0;
-    vi inc(n,0), q(n+1,0);
-    ts.clear();
+    vi ts;
+    toposort(graphal &g){
+      int n=g.n, ix, nx, qb=0,qe=0;
+      vi inc(n,0), q(n+1,0);
+      ts.clear();
 
-    for(int i=0;i<n;i++) for(auto j:g.ed[i]){ inc[j]++; }
+      for(int i=0;i<n;i++) for(auto j:g.ed[i]){ inc[j]++; }
 
-    for(int i=0;i<n;i++)if(inc[i]==0)q[qe++]=i;
-    while(qb<qe){
-      ix=q[qb++]; ts.pb(ix);
-      for(int i=0;i<g.ed[ix].size();i++){
-        nx=g.ed[ix][i];
-        inc[nx]--;
-        if(inc[nx]==0)q[qe++]=nx;
+      for(int i=0;i<n;i++)if(inc[i]==0)q[qe++]=i;
+      while(qb<qe){
+        ix=q[qb++]; ts.pb(ix);
+        for(int i=0;i<g.ed[ix].size();i++){
+          nx=g.ed[ix][i];
+          inc[nx]--;
+          if(inc[nx]==0)q[qe++]=nx;
+        }
       }
     }
-  }
 };
 endsnippet
 
@@ -217,134 +227,134 @@ class lca {
   vector<vi> up;
   vi tin, tout, h;
   public:
-    lca(const graphal &g, const int &n):
-      g(g),n(n),timer(0),tin(n,0),tout(n,0),h(n,0),
-      up(n,vi(L,0)){ }
-    void dfs(int v=0, int p=-1){
-      int x;
-      tin[v]=timer++;
-      up[v][0]=p;
-      for(int i=1;i<L;i++){
-        x=up[v][i-1];
-        if(x==-1)up[v][i]=-1;
-        else up[v][i]=up[x][i-1];
-      }
-      for(auto i:g.ed[v])
+  lca(const graphal &g, const int &n):
+    g(g),n(n),timer(0),tin(n,0),tout(n,0),h(n,0),
+    up(n,vi(L,0)){ }
+  void dfs(int v=0, int p=-1){
+    int x;
+    tin[v]=timer++;
+    up[v][0]=p;
+    for(int i=1;i<L;i++){
+      x=up[v][i-1];
+      if(x==-1)up[v][i]=-1;
+      else up[v][i]=up[x][i-1];
+    }
+    for(auto i:g.ed[v])
       if(i!=p){
         h[i]=h[v]+1;
         dfs(i,v);
       }
-      tout[v]=timer++;
+    tout[v]=timer++;
+  }
+  bool isa(int a, int b){ return ((a==-1) || (tin[a]<=tin[b] && tout[a]>=tout[b]));}
+  int getlca(int a, int b){
+    if(isa(a,b))return a;
+    if(isa(b,a))return b;
+    for(int i=L-1;i>=0;i--){
+      if(!isa(up[a][i],b))a=up[a][i];
     }
-    bool isa(int a, int b){ return ((a==-1) || (tin[a]<=tin[b] && tout[a]>=tout[b]));}
-    int getlca(int a, int b){
-      if(isa(a,b))return a;
-      if(isa(b,a))return b;
-      for(int i=L-1;i>=0;i--){
-        if(!isa(up[a][i],b))a=up[a][i];
-      }
-      return up[a][0]==-1?a:up[a][0];
-    }
-    int getdist(int a, int b){ return h[a]+h[b]-2*h[getlca(a,b)]; }
-    int go(int v, int len){
-      for(auto i=L-1;i>=0;i--)if(up[v][i]!=-1 && (len&(1<<i))){ v=up[v][i];}
-      return v;
-    }
+    return up[a][0]==-1?a:up[a][0];
+  }
+  int getdist(int a, int b){ return h[a]+h[b]-2*h[getlca(a,b)]; }
+  int go(int v, int len){
+    for(auto i=L-1;i>=0;i--)if(up[v][i]!=-1 && (len&(1<<i))){ v=up[v][i];}
+    return v;
+  }
 };
 endsnippet
 
 snippet dijkstra "Dijkstra's shortest path algorithm"
 class dijkstra{
   public:
-  typedef ${1:int} dt;
-  typedef pair<dt,int> pt;
-  int n, done;
-  const graphwal &g;
-  vector<dt> d;
-  vi pr;
-  vector<bool> v;
-  const static dt MAXV=${2:INT_MAX};
-  priority_queue<pt,vector<pt>,${3:greater<pt>}> h;
-  dijkstra(const graphwal &g):
-  n(g.n),done(-1),g(g),
-  d(n),pr(n),v(n){ }
-  void findall(int sr=0){
-    pt ret;
-    fill(v.begin(),v.end(),false);
-    fill(pr.begin(),pr.end(),-1);
-    fill(d.begin(),d.end(),MAXV);
-    d[sr]=0;
-    for(auto i:g.ed[sr]){
-      d[i.fi]=i.se;
-      h.push(pt(i.se,i.fi));
-    }
-    while(!h.empty()){
-      ret=h.top();
-      h.pop();
-      if(v[ret.se])continue;
-      v[ret.se]=true;
-      for(auto i:g.ed[ret.se]){
-        if(!v[i.fi] && d[i.fi]-i.se > ret.fi){
-          d[i.fi]=ret.fi+i.se;
-          pr[i.fi]=ret.se;
-          h.push(pt(d[i.fi],i.fi));
+    typedef ${1:int} dt;
+    typedef pair<dt,int> pt;
+    int n, done;
+    const graphwal &g;
+    vector<dt> d;
+    vi pr;
+    vector<bool> v;
+    const static dt MAXV=${2:INT_MAX};
+    priority_queue<pt,vector<pt>,${3:greater<pt>}> h;
+    dijkstra(const graphwal &g):
+      n(g.n),done(-1),g(g),
+      d(n),pr(n),v(n){ }
+    void findall(int sr=0){
+      pt ret;
+      fill(v.begin(),v.end(),false);
+      fill(pr.begin(),pr.end(),-1);
+      fill(d.begin(),d.end(),MAXV);
+      d[sr]=0;
+      for(auto i:g.ed[sr]){
+        d[i.fi]=i.se;
+        h.push(pt(i.se,i.fi));
+      }
+      while(!h.empty()){
+        ret=h.top();
+        h.pop();
+        if(v[ret.se])continue;
+        v[ret.se]=true;
+        for(auto i:g.ed[ret.se]){
+          if(!v[i.fi] && d[i.fi]-i.se > ret.fi){
+            d[i.fi]=ret.fi+i.se;
+            pr[i.fi]=ret.se;
+            h.push(pt(d[i.fi],i.fi));
+          }
         }
       }
+      done=sr;
     }
-    done=sr;
-  }
-  dt find(int tr, int sr=0){
-    if(done!=sr) findall(sr);
-    if(d[tr]==MAXV)return -1;
-    return d[tr];
-  }
+    dt find(int tr, int sr=0){
+      if(done!=sr) findall(sr);
+      if(d[tr]==MAXV)return -1;
+      return d[tr];
+    }
 };
 endsnippet
 
 snippet prims "prim's algorithm for mst"
 class prims{
   public:
-  typedef ll dt;
-  typedef pair<dt,int> pt;
-  int n;
-  const graphwal &g;
-  vector<dt> d;
-  vi pr;
-  vector<bool> v;
-  const static dt MAXV=LLONG_MAX;
-  priority_queue<pt,vector<pt>,greater<pt>> h;
-  prims(const graphwal &g):
-    n(g.n),g(g),d(n),pr(n),v(n){}
-  dt calc(int sr=0){
-    pt ret;
-    dt mst=0;
-    int nmst=0;
-    fill(v.begin(),v.end(),false);
-    fill(pr.begin(),pr.end(),-1);
-    fill(d.begin(),d.end(),MAXV);
-    d[sr]=0;
-    h.push(pt(0,sr));
-    while(!h.empty()){
-      ret=h.top();
-      h.pop();
-      if(v[ret.se])continue;
-      v[ret.se]=true;
-      mst+=ret.fi;
-      nmst++;
-      for(auto i:g.ed[ret.se]){
-        if(!v[i.fi] && d[i.fi] > i.se){
-          d[i.fi]=i.se;
-          pr[i.fi]=ret.se;
-          h.push(pt(d[i.fi],i.fi));
+    typedef ll dt;
+    typedef pair<dt,int> pt;
+    int n;
+    const graphwal &g;
+    vector<dt> d;
+    vi pr;
+    vector<bool> v;
+    const static dt MAXV=LLONG_MAX;
+    priority_queue<pt,vector<pt>,greater<pt>> h;
+    prims(const graphwal &g):
+      n(g.n),g(g),d(n),pr(n),v(n){}
+    dt calc(int sr=0){
+      pt ret;
+      dt mst=0;
+      int nmst=0;
+      fill(v.begin(),v.end(),false);
+      fill(pr.begin(),pr.end(),-1);
+      fill(d.begin(),d.end(),MAXV);
+      d[sr]=0;
+      h.push(pt(0,sr));
+      while(!h.empty()){
+        ret=h.top();
+        h.pop();
+        if(v[ret.se])continue;
+        v[ret.se]=true;
+        mst+=ret.fi;
+        nmst++;
+        for(auto i:g.ed[ret.se]){
+          if(!v[i.fi] && d[i.fi] > i.se){
+            d[i.fi]=i.se;
+            pr[i.fi]=ret.se;
+            h.push(pt(d[i.fi],i.fi));
+          }
         }
       }
+      if(nmst!=n)return -1;
+      return mst;
     }
-    if(nmst!=n)return -1;
-    return mst;
-  }
-  bool inmst(int a, int b){
-    return (pr[a]==b || pr[b]==a);
-  }
+    bool inmst(int a, int b){
+      return (pr[a]==b || pr[b]==a);
+    }
 };
 endsnippet
 
@@ -470,14 +480,14 @@ class hungarian{
   }//end of augment() function
   dt doit()
   {
-   dt ret = 0; //weight of the optimal matching
-   mx = 0; //number of vertices in current matching
-   memset(xy, -1, sizeof(xy));
-   memset(yx, -1, sizeof(yx));
-   init(); //step 0
-   augment(); //steps 1-3
-   for (int x=0;x<nx;x++) ret += cost[x][xy[x]];
-   return ret;
+    dt ret = 0; //weight of the optimal matching
+    mx = 0; //number of vertices in current matching
+    memset(xy, -1, sizeof(xy));
+    memset(yx, -1, sizeof(yx));
+    init(); //step 0
+    augment(); //steps 1-3
+    for (int x=0;x<nx;x++) ret += cost[x][xy[x]];
+    return ret;
   }
 };
 endsnippet
@@ -604,7 +614,7 @@ snippet flow "flow network using priority q"
 //T should be signed.
 template<class T>
 class flow{
-  typedef pair<int,T> pqdt;
+  typedef pair<T,int> pqdt;
   typedef vector<T> vt;
   typedef graphed<T> fgraph;
   typedef edge<T> fedge;

@@ -144,3 +144,169 @@ class mat{
   }
 };
 endsnippet
+
+snippet compress "compress index values"
+class cix{
+  typedef ${1:int} T;
+  public:
+  int ix;
+  map<T,int> ma;
+  map<T,int>::iterator it;
+  vector<T> r;
+  cix():ix(0){}
+  int get(T a){
+    it=ma.find(a);
+    if(it==ma.end()){
+      ma[a]=ix;
+      r.pb(a);
+      return ix++;
+    }
+    else return (*it).se;
+  }
+  bool has(T a){ return ma.find(a)!=ma.end(); }
+  T rget(int i){ return r[i]; }
+  int size(){return ix;}
+};
+endsnippet
+
+snippet compressrange "compress range"
+template<class T>
+class crix{
+  typedef pair<T,T> pdt;
+  public:
+  set<T> st;
+  vector<pdt> vpt;
+  vector<T> sz;
+  crix(){}
+  void add(T a){st.insert(a);}
+  void doit(){
+    auto it=st.begin();
+    int n=st.size();
+    for(int i=0;i<n-1;i++){
+      T bg=(*it);
+      it++;
+      T en=(*it)-1;
+      vpt.pb({bg,en});
+      sz.pb(en-bg+1);
+    }
+  }
+  int size(){return vpt.size();}
+  pdt get(int ix){return vpt[ix];}
+  T ixsz(int ix){return sz[ix];}
+  bool wraps(int ix, T a, T b){return (a<=vpt[ix].fi && b>=vpt[ix].se);}
+};
+endsnippet
+snippet fft "fft"
+namespace FFT {
+  #define PI 3.141592653589793
+  typedef complex<dbl> base;
+  typedef vector<base> vbase;
+  void addmod(int& x, int y, int mod) { (x += y) >= mod && (x -= mod); }
+  int mulmod(int x, int y, int mod) { return x * 1ll * y % mod; }
+
+  void fft(vbase &a, bool invert=false) {
+    int n = a.size();
+    for (int i = 1, j = 0; i<n; ++i) {
+      int bit = n >> 1;
+      for (; j >= bit; bit >>= 1) j -= bit;
+      j += bit;
+      if (i < j) swap(a[i], a[j]);
+    }
+    for (int len = 2; len <= n; len <<= 1) {
+      double ang = 2 * PI / len * (invert ? -1 : 1);
+      base wlen(cosl(ang), sinl(ang));
+      for (int i = 0; i<n; i += len) {
+        base w(1);
+        for (int j = 0; j<len / 2; ++j) {
+          base u = a[i + j], v = a[i + j + len / 2] * w;
+          a[i + j] = u + v; a[i + j + len / 2] = u - v;
+          w *= wlen;
+        }
+      }
+    }
+    if(invert){ for(int i=0;i<n;i++)a[i]/=n; }
+  }
+
+  vi mult(const vi& a, const vi& b) {
+    size_t n=1;
+    while (n < max(a.size(), b.size()))  n <<= 1;
+    n <<= 1;
+    vbase A(a.begin(),a.end());
+    vbase B(b.begin(),b.end());
+    A.resize(n), B.resize(n);
+
+    fft(A), fft(B);
+    for(size_t i=0;i<n;i++) A[i] *= B[i];
+    fft(A,true);
+
+    vi c(n, 0);
+    for(size_t i=0;i<n;i++) c[i] = ((ll) (A[i].real() + 0.5)) % MODV;
+
+    return c;
+  }
+
+  vi squ(vi a) {
+    vbase fa(a.begin(), a.end()), fb(a.begin(), a.end());
+    size_t n = 1;
+    while (n < a.size())  n <<= 1;
+    n <<= 1;
+    fa.resize(n), fb.resize(n);
+
+    fft(fa, false);
+    fb = fa;
+    for (size_t i = 0; i < n; ++i) fa[i] *= fb[i];
+    fft(fa, true);
+
+    vi res;
+    res.resize(n);
+    for (size_t i = 0; i < n; ++i)
+      res[i] = int(fa[i].real() + 0.5);
+    return res;
+  }
+
+  vi multmod(const vi& a, const vi& b) {
+    int base = (int) sqrtl(MODV);
+    int na=a.size(), nb=b.size();
+
+    vi a0(na), a1(na);
+    for(int i=0;i<na;i++){
+      a0[i] = a[i] % base;
+      a1[i] = a[i] / base;
+      assert(a[i] == a0[i] + base * a1[i]);
+    }
+
+    vi b0(nb), b1(nb);
+    for(int i=0;i<nb;i++){
+      b0[i] = b[i] % base;
+      b1[i] = b[i] / base;
+      assert(b[i] == b0[i] + base * b1[i]);
+    }
+
+    vi a01 = a0;
+    for(int i=0;i<na;i++){addmod(a01[i], a1[i], MODV);}
+
+    vi b01 = b0;
+    for(int i=0;i<nb;i++){addmod(b01[i], b1[i], MODV);}
+
+    vi C = mult(a01, b01);
+
+    vi a0b0 = mult(a0, b0);
+    vi a1b1 = mult(a1, b1);
+
+    vi mid = C;
+    int nc=C.size();
+    for(int i=0;i<nc;i++){
+      addmod(mid[i], -a0b0[i] + MODV, MODV);
+      addmod(mid[i], -a1b1[i] + MODV, MODV);
+    }
+
+    vi res = a0b0;
+    for(size_t i=0;i<res.size();i++){ addmod(res[i], mulmod(base, mid[i], MODV), MODV); }
+
+    base = mulmod(base, base, MODV);
+    for(size_t i=0;i<res.size();i++) { addmod(res[i], mulmod(base, a1b1[i], MODV), MODV); }
+
+    return res;
+  }
+}
+endsnippet

@@ -237,27 +237,3 @@ snippet memset "array filling"
 memset(${1:a},${2:0},sizeof(${3:int})${4:*n});
 $0
 endsnippet
-
-snippet compress "compress index values"
-class cix{
-  typedef ${1:int} T;
-  public:
-  int ix;
-  map<T,int> ma;
-  map<T,int>::iterator it;
-  vector<T> r;
-  cix():ix(0){}
-  int get(T a){
-    it=ma.find(a);
-    if(it==ma.end()){
-      ma[a]=ix;
-      r.pb(a);
-      return ix++;
-    }
-    else return (*it).se;
-  }
-  bool has(T a){ return ma.find(a)!=ma.end(); }
-  T rget(int i){ return r[i]; }
-  int size(){return ix;}
-};
-endsnippet
