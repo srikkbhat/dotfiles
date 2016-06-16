@@ -118,27 +118,27 @@ snippet diameter "get the diameter of a tree"
 int diameter(int &d, int ix=0, int par=-1){
   //${1:0} 0->all nodes 1->selected nodes
   int mx=`!p
-    if t[1]=="1":
-      snip.rv="-1"
-    else:
-      snip.rv="0"
-        `,mx2=-1,cur;`!p
-        if t[1]=="1":
-          snip.rv="\n  if(selected[ix])mx=0;"
-            `
-            for(auto i:ed[ix])
-              if(i!=par){
-                cur=diameter(d,i,ix);
-                if(cur>mx){mx2=mx;mx=cur;}else if(cur>mx2)mx2=cur;
-              }
+if t[1]=="1":
+  snip.rv="-1"
+else:
+  snip.rv="0"
+`,mx2=-1,cur;`!p
+if t[1]=="1":
+  snip.rv="\n  if(selected[ix])mx=0;"
+`
+  for(auto i:ed[ix])
+  if(i!=par){
+    cur=diameter(d,i,ix);
+    if(cur>mx){mx2=mx;mx=cur;}else if(cur>mx2)mx2=cur;
+  }
   if(mx2!=-1)d=max(d,mx+mx2);
-  `!p
-    if t[1]=="1":
-      snip.rv="  if(selected[ix] || mx>0)mx++;"
-    else:
-      snip.rv="  mx++;"
-        `
-        return mx;
+`!p
+if t[1]=="1":
+  snip.rv="  if(selected[ix] || mx>0)mx++;"
+else:
+  snip.rv="  mx++;"
+`
+  return mx;
 }
 endsnippet
 

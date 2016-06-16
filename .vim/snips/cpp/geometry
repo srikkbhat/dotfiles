@@ -2,11 +2,11 @@ snippet dist "distance between two points"
 ${1:ll} dist(pi a, pi b){
   ll x=a.fi-b.fi, y=a.se-b.se;
   return `!p
-    if t[1]=="ll":
-      snip.rv="x*x+y*y"
-    else:
-      snip.rv="sqrt((dbl)(x*x+y*y))"
-        `;
+if t[1]=="ll":
+  snip.rv="x*x+y*y"
+else:
+  snip.rv="sqrt((dbl)(x*x+y*y))"
+`;
 }
 endsnippet
 snippet line "line"
