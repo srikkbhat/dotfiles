@@ -237,3 +237,7 @@ snippet memset "array filling"
 memset(${1:a},${2:0},sizeof(${3:int})${4:*n});
 $0
 endsnippet
+
+snippet clock "add time tracking"
+cerr << "Time elapsed: " << 1.0 * clock() / CLOCKS_PER_SEC << " s.\n";
+endsnippet

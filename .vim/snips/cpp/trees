@@ -103,13 +103,13 @@ class fenwick {
 };
 endsnippet
 
-snippet wordtree "form a tree using array of words"
-class wordtree {
+snippet trie "form a tree using array of words"
+class trie {
   int ix, tx;
   vector<vi> t;
   vi endix;
   public:
-    wordtree():
+    trie():
       ix(0),tx(1),t(MAXT,vi(26,0)),endix(MAXT,-1){}
     void update(const char* s, int tix=0){
       if((*s)==0){
