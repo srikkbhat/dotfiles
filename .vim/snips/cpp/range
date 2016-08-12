@@ -121,3 +121,40 @@ class sqrtdecomp{
   dt query(int lix, int rix){ return (rix>=lix)?query(rix)-query(lix-1):0; }
 };
 endsnippet
+snippet moalgo "mo's algorithm"
+struct mo {
+  static const int BLK=225;
+  int l, r;
+  bool operator< (const mo &o) const{
+    int lb=l/BLK, ob=o.l/BLK;
+    if(lb!=ob)return lb<ob;
+    return r<o.r;
+  }
+};
+  int q;
+  vector<mo> m(q);
+  sort(m.begin(), m.end());
+  //zero based indexing
+  int cr=0, cl=0;
+  for(int i=0;i<q;i++){
+    mo &t=m[i];
+    while(cr<=t.r){
+      //add cr
+
+      cr++;
+    }
+    while(cl<t.l){
+      //remove cl
+
+      cl++;
+    }
+    while(cl>t.l){
+      cl--;
+      //add cl
+    }
+    while(cr>(t.r+1)){
+      cr--;
+      //remove cr
+    }
+  }
+endsnippet
