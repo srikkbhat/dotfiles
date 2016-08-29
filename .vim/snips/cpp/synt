@@ -18,9 +18,12 @@ else:
 typedef long long ll;
 typedef double dbl;
 typedef vector<int> vi;
+typedef vector<ll> vll;
 typedef pair<int, int> pi;
 void addmod(int &a, ll b){a=(a+b); if(a>=MODV)a-=MODV;}
 void mulmod(int &a, ll b){a=(a*b)%MODV;}
+template<class T>bool domin(T &a, const T &b){return a>b?a=b,1:0;}
+template<class T>bool domax(T &a, const T &b){return a<b?a=b,1:0;}
 int gi(){int a;scanf("%d",&a);return a;}
 ll gll(){ll a;scanf(LL,&a);return a;}
 
@@ -43,9 +46,12 @@ using namespace std;
 typedef long long ll;
 typedef double dbl;
 typedef vector<int> vi;
+typedef vector<ll> vll;
 typedef pair<int, int> pi;
 void addmod(int &a, ll b){a=(a+b); if(a>=MODV)a-=MODV;}
 void mulmod(int &a, ll b){a=(a*b)%MODV;}
+template<class T>bool domin(T &a, const T &b){return a>b?a=b,1:0;}
+template<class T>bool domax(T &a, const T &b){return a<b?a=b,1:0;}
 int gi(){int a;scanf("%d",&a);return a;}
 ll gll(){ll a;scanf("%lld",&a);return a;}
 
@@ -84,8 +90,12 @@ typedef pair<int, int> pi;
 typedef long long ll;
 typedef double dbl;
 typedef vector<int> vi;
+typedef vector<ll> vll;
+typedef pair<int, int> pi;
 void addmod(int &a, ll b){a=(a+b); if(a>=MODV)a-=MODV;}
 void mulmod(int &a, ll b){a=(a*b)%MODV;}
+template<class T>bool domin(T &a, const T &b){return a>b?a=b,1:0;}
+template<class T>bool domax(T &a, const T &b){return a<b?a=b,1:0;}
 int gi(){int a;scanf("%d",&a);return a;}
 ll gll(){ll a;scanf("%lld",&a);return a;}
 
