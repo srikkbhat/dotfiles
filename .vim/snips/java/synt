@@ -1,0 +1,16 @@
+snippet start "start program"
+import java.util.*;
+import java.io.PrintStream;
+
+public class ${1:pa} {
+  static final int MODV=1000000007;
+  Scanner in;
+  PrintWriter out;
+  void doit() throws Exception {
+    in = new Scanner(System.in);
+    out = new PrintWriter(System.out);
+    $0
+  }
+  public static void main(String args[]) throws Exception{ new $1().doit(); }
+}
+endsnippet
