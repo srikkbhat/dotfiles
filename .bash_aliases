@@ -11,8 +11,7 @@ alias bdpull='git pull bitbucket devdaily'
 alias gitorig='git push origin master'
 alias e='exit'
 alias bowup='bower update'
-alias g11="g++ -Wall -pipe -std=c++11 -static -DSRIKKHOME -s -O2"
-alias g11g="g++ -g -Wall -pipe -std=c++11 -static -DSRIKKHOME -s -O2"
+alias g11="g++ -ggdb -Wall -pipe -std=c++11 -static -s -O2 -DHOME"
 
 #docker shortcuts
 alias cddock='cd /mnt/home/gubuntu-docker'

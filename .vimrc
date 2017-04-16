@@ -44,6 +44,9 @@ Plugin 'Raimondi/delimitMate'
 "tComment
 Plugin 'tomtom/tcomment_vim'
 
+"Google color scheme
+Plugin 'google/vim-colorscheme-primary'
+
 call vundle#end()            " required
 filetype plugin indent on    " required
 
@@ -76,6 +79,10 @@ highlight ColorColumn ctermbg=233
 set t_Co=256
 syntax enable
 set background=dark
+"colorscheme primary
+
+"solarized
+colorscheme solarized
 
 set ruler " show the cursor position all the time
 set title " show title in console title bar
@@ -175,8 +182,6 @@ endfunction
 " Remove trailing whitespace on <leader>ss
 nnoremap <leader>ss :call StripWhitespace()<CR>
 
-"solarized
-colorscheme solarized
 
 "syntastic
 set statusline+=%#warningmsg#

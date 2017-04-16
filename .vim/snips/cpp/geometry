@@ -1,13 +1,21 @@
-snippet dist "distance between two points"
-${1:ll} dist(pi a, pi b){
-  ll x=a.fi-b.fi, y=a.se-b.se;
-  return `!p
-if t[1]=="ll":
-  snip.rv="x*x+y*y"
-else:
-  snip.rv="sqrt((dbl)(x*x+y*y))"
-`;
-}
+snippet point "point functions"
+struct point {
+  typedef ll dt;
+  dt x, y;
+  point(){}
+  point(dt x, dt y):x(x),y(y){}
+  dbl dist(const point &pa, const point &pb){
+    dbl num = (pb.y-pa.y)*x - (pb.x-pa.x)*y + pb.x*pa.y - pb.y*pa.x;
+    if(num<0)num=-num;
+    dbl den = (pb.y-pa.y)*(pb.y-pa.y) + (pb.x-pa.x)*(pb.x-pa.x);
+    den = sqrt(den);
+    return num/den;
+  }
+  dbl dist(const point &o){
+    dbl dx=o.x-x, dy=o.y-y;
+    return sqrt(dx*dx+dy*dy);
+  }
+};
 endsnippet
 snippet line "line"
 struct line {
