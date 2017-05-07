@@ -1,4 +1,4 @@
-snippet cnk2 "select k from n"
+snippet selectcnk2 "select k from n"
 ll cnk(int n, int k){
   if(n<k)return 0;
   ll ret=1;
@@ -55,7 +55,7 @@ void calcfact(){
 }
 endsnippet
 
-snippet cnk "calculate cnk using mod"
+snippet selectcnk "calculate cnk using mod"
 int cnp(int n, int k){
   static bool done=false;
   if(!done){ done=true; calcfact(); }
@@ -309,4 +309,59 @@ namespace FFT {
     return res;
   }
 }
+endsnippet
+
+snippet forwarddp "forward dynamic programming"
+template<class T>
+class fwdp{
+  int n;
+  const vi &cnt;
+  const T &val;
+  int dpsz;
+  vi dp, sel;
+  public:
+  fwdp(int n,const vi &cnt, const T& val):n(n),cnt(cnt),val(val){
+    dpsz=1;
+    for(auto i:cnt){
+      //0 to i inclusive
+      dpsz *= (1+i);
+    }
+    dp.resize(dpsz,MODV);
+    sel.resize(n);
+  }
+
+  void rec(int ix, int st, int cl, int cr, int &res){
+    if(ix==n){
+      if(cl==cr){
+        res=min(res,dp[st]+cl*cr);
+      }
+      return;
+    }
+    for(int i=0;i<=sel[ix];i++){
+      //i is used for this state sel[ix]-i is unused;
+      rec(ix+1, st*(1+cnt[ix])+i, cl+val[ix].fi*(sel[ix]-i), cr+val[ix].se*(sel[ix]-i), res);
+    }
+  }
+
+  void dfs(int v, int st){
+    if(v==n){
+      if(st>0){
+        rec(0,0,0,0,dp[st]);
+      }else{
+        dp[st]=0;
+      }
+
+      return;
+    }
+    for(int i=0;i<=cnt[v];i++){
+      sel[v]=i;
+      //0 to i inclusive
+      dfs(v+1,st*(1+cnt[v])+i);
+    }
+  }
+  int doit() {
+    dfs(0,0);
+    return dp[dpsz-1];
+  }
+};
 endsnippet

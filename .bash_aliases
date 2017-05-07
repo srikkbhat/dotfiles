@@ -11,7 +11,16 @@ alias bdpull='git pull bitbucket devdaily'
 alias gitorig='git push origin master'
 alias e='exit'
 alias bowup='bower update'
-alias g11="g++ -ggdb -Wall -pipe -std=c++11 -static -s -O2 -DHOME"
+alias g11='g++ -ggdb -Wall -pipe -std=c++11 -O2 -DHOME'
+alias dcj='~/Dropbox/gcj/distributed/dcj_linux/dcj.sh'
 
 #docker shortcuts
 alias cddock='cd /mnt/home/gubuntu-docker'
+
+dcjcompile() {
+  dcj build --source $1
+}
+
+dcjtest() {
+  dcj test --source $1 --nodes $2
+}
