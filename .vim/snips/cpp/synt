@@ -92,9 +92,9 @@ ll gll(){ll a;scanf("%lld",&a);return a;}
 int mynode, nnodes;
 void donode() {
   ll result=0;
+  $0
   PutLL(MASTER_NODE, result);
   Send(MASTER_NODE);
-  $0
 }
 void domaster(){
   for (int node = 0; node < nnodes; ++node)

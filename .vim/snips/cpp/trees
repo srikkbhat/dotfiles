@@ -1,63 +1,95 @@
-snippet rangetree "range queries"
-template <typename T>
-class bitree{ //range max between two ix
-  const int &n; const vector<T> &a; //inp array ix 0->n-1
-  vector<T> t, upd; //b tree
+snippet segmenttree "segment tree range queries"
+struct segdiff{
+  int val;
+  segdiff(){ val=0; }
+  segdiff(int val):val(val){}
+  void reset() { val=0; }
+  void update(const segdiff &u){
+    val += u.val;
+  }
+  void debug() const { printf("diff: %d\n",val); }
+};
+
+struct segval{
+  int val;
+  segval(){val=0;}
+  segval(int av){
+    set(av);
+  }
+  void set(int av){
+    val=av;
+  }
+  void apply(const segdiff &u){
+    val += u.val;
+  }
+  int getval(){
+    return val;
+  }
+  void update(const segval &left, const segval &right){
+    val = left.val+right.val;
+  }
+  void debug() {
+    printf("val: %d\n", val);
+  }
+};
+
+struct segtree{
+  const int &n; const vector<ll> &a;
+  int mxsz;
+  vector<segval> val;
+  vector<segdiff> diff;
   vector<bool> lz;
   public:
-  bitree(const vector<T> &a, const int &n):
-    n(n),a(a),t(4*n),upd(4*n),lz(4*n,false){}
+  segtree(const vector<node> &a, const int &n):
+    n(n),a(a),mxsz(4*n),val(4*n),diff(4*n),lz(4*n,false){}
+
   void build(){build(1,0,n-1);}
   void build(int v, int l, int r){
-    if(l==r){ t[v] = a[l]; return; }
-    int mid = (l+r)/2, nv=v*2;
-    build(nv, l, mid); build(nv+1, mid+1, r);
-    t[v] = max(t[nv], t[nv+1]);
-  }
-  void trickledown(int v, int nv){
-    //update t[nv], t[nv+1], upd[nv], upd[nv+1]
-    upd[nv]=max(upd[nv],upd[v]);
-    upd[nv+1]=max(upd[nv+1],upd[v]);
-    t[nv]=max(t[nv],upd[v]);
-    t[nv+1]=max(t[nv+1],upd[v]);
-    lz[nv]=lz[nv+1]=true;
-    lz[v]=false; upd[v]=0;
-  }
-  void updaterange(int ql, int qr, T val){updaterange(ql,qr,val,1,0,n-1);}
-  void updaterange(int ql, int qr, T val, int v, int l, int r){
-    if(ql>qr)return;
-    if(qr>r || ql<l)return;
-    if(l==r){t[v]=val;return;}
-    if(ql<=l && qr>=r){
-      //update upd[v], t[v]
-      upd[v]=max(upd[v],val);
-      t[v]=max(t[v],val);
-      lz[v]=true;
+    if(l==r){
+      val[v].set(a[l].v);
       return;
     }
     int mid = (l+r)/2, nv=v*2;
-    if(lz[v])trickledown(v,nv);
-    updaterange(ql,qr,val,nv,l,mid);
-    updaterange(ql,qr,val,nv+1,mid+1,r);
-    t[v]=max(t[nv], t[nv+1]);
+    build(nv, l, mid); build(nv+1, mid+1, r);
+    val[v].update(val[nv], val[nv+1]);
   }
-  void update(int ix){update(ix,1,0,n-1);}
-  void update(int ix, int v, int l, int r){
-    if(l==r){ t[v]=a[ix]; return; }
-    int mid = (l+r)/2, nv=v*2;
-    if(lz[v])trickledown(v,nv);
-    if(ix<=mid) update(ix,nv,l,mid);
-    else update(ix,nv+1,mid+1,r);
-    t[v]=max(t[nv], t[nv+1]);
+  void push(int v){
+    int nv=v*2;
+    if(nv+1<mxsz) {
+      diff[nv].update(diff[v]);
+      diff[nv+1].update(diff[v]);
+      lz[nv]=lz[nv+1]=true;
+    }
+    val[v].apply(diff[v]);
+    diff[v].reset();
+    lz[v]=false;
   }
-  T query(int ql, int qr){return query(ql,qr,1,0,n-1);}
-  T query(int ql,int qr,int v,int L,int R){ //ql, qr inclusive
-    if(ql>R || qr<L)return 0;
-    if(ql<=L && qr>=R)return t[v];
+  void updaterange(int ql, int qr, const segdiff &u){updaterange(1,0,n-1,ql,qr,u);}
+  void updaterange(int v, int L, int R, int ql, int qr, const segdiff &u){
+    if(ql>qr)return;
+    if(lz[v])push(v);
+    if(ql>R || qr<L)return;
+    if(ql<=L && qr>=R){
+      diff[v].update(u);
+      push(v);
+      return;
+    }
+    int mid = (L+R)/2, nv=v*2;
+    updaterange(nv, L, mid, ql,qr,u);
+    updaterange(nv+1, mid+1, R, ql,qr,u);
+    val[v].update(val[nv], val[nv+1]);
+  }
+  segval query(int ql, int qr){return query(1,0,n-1,ql,qr);}
+  segval query(int v, int L, int R, int ql,int qr){ //ql, qr inclusive
+    if(ql>R || qr<L)return segval();
+    if(lz[v]) push(v);
+    if(ql<=L && qr>=R){
+      return val[v];
+    }
     int MID = (L+R)/2, nv=v*2;
-    if(lz[v])trickledown(v,nv);
-    T ans = max(query(ql,qr,nv,L,MID), query(ql,qr,nv+1,MID+1,R));
-    return ans;
+    segval result;
+    result.update(query(nv, L, MID, ql,qr), query(nv+1,MID+1, R, ql,qr));
+    return result;
   }
 };
 endsnippet
