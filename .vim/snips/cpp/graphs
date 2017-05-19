@@ -620,6 +620,7 @@ class flow{
   typedef edge<T> fedge;
   public:
   int n, ssourcev, ssinkv;
+  bool sourceb=false, sinkb=false;
   fgraph &g;
   flow(const int &n, fgraph &g):n(n),g(g){}
 
@@ -632,14 +633,13 @@ class flow{
     }
   }
   void addssedge(const int &v, const T &cap, bool issource=true){
-    static bool source=false, sink=false;
-    if(issource && !source){
-      source=true;
+    if(issource && !sourceb){
+      sourceb=true;
       ssourcev=n;
       g.resize(++n);
     }
-    if(!issource && !sink){
-      sink=true;
+    if(!issource && !sinkb){
+      sinkb=true;
       ssinkv=n;
       g.resize(++n);
     }
