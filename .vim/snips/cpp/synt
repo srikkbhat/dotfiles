@@ -64,6 +64,59 @@ int main() {
 }
 endsnippet
 
+snippet startdcj "distributed code jam  start program"
+#include "${1:test}.h"
+#include <message.h>
+#include <bits/stdc++.h>
+using namespace std;
+
+#define fi first
+#define se second
+#define pb push_back
+#define mp make_pair
+#define MASTER_NODE 0
+#define MODV 1000000007
+
+typedef long long ll;
+typedef double dbl;
+typedef vector<int> vi;
+typedef vector<ll> vll;
+typedef pair<int, int> pi;
+template<class T> void addmod(T &a, ll b){if(b>MODV)b%=MODV;a=(a+b); if(a>=MODV)a-=MODV;}
+template<class T> void mulmod(T &a, ll b){if(b>MODV)b%=MODV;a=(a*b)%MODV;}
+template<class T>bool domin(T &a, const T &b){return a>b?a=b,1:0;}
+template<class T>bool domax(T &a, const T &b){return a<b?a=b,1:0;}
+int gi(){int a;scanf("%d",&a);return a;}
+ll gll(){ll a;scanf("%lld",&a);return a;}
+
+int mynode, nnodes;
+void donode() {
+  ll result=0;
+  $0
+  PutLL(MASTER_NODE, result);
+  Send(MASTER_NODE);
+}
+void domaster(){
+  for (int node = 0; node < nnodes; ++node)
+  if(node != MASTER_NODE){
+      Receive(node);
+      long long value = GetLL(node);
+  }
+}
+
+int main() {
+  mynode=MyNodeId();
+  nnodes=NumberOfNodes();
+  if (mynode == MASTER_NODE) {
+    domaster();
+    return 0;
+  } else {
+    donode();
+  }
+  return 0;
+}
+endsnippet
+
 snippet startusaco "uscao start program"
 /*
    ID: srikkbh1
