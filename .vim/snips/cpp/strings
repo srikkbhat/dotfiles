@@ -30,7 +30,7 @@ class kmp{
 };
 endsnippet
 
-snippet calcz "z algorithm pattern matching"
+snippet zalgo "z algorithm pattern matching"
 template <typename T>
 void zalgo(const T &s) {
   int L = 0, R = 0;
