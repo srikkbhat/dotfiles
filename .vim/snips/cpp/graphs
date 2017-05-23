@@ -16,6 +16,11 @@ if t[1]=="2":
 else:
   snip.rv=""
 `{}
+    void reset(int n){
+	  ed.clear();
+	  this->n=n;
+	  ed.resize(n);
+	}
     void add(int a, int b){ ed[a].push_back(b);`!p
 if t[1]=="1":
   snip.rv= "ed[b].push_back(a);"
@@ -47,6 +52,11 @@ if t[1]=="2":
 else:
   snip.rv=""
 `{}
+    void reset(int n){
+	  ed.clear();
+	  this->n=n;
+	  ed.resize(n);
+	}
     void add(int a, int b, $2 w){ed[a].pb(mp(b,w));`!p
 if t[1]=="1":
   snip.rv= "ed[b].pb(mp(a,w));"
@@ -491,6 +501,67 @@ class hungarian{
   }
 };
 endsnippet
+snippet scctarjan "strongly connected components using tarjan"
+struct scctarjan{
+  const graphal &g;
+  graphal gc;
+  vi d,st;
+  int n, stz, cs;
+  scctarjan(const graphal &g):
+    g(g),
+    d(g.n,-1),
+    st(g.n+5,0),
+    n(g.n),
+    stz(0),
+    cs(g.n) { }
+  //prev not required for directed graph
+  int dfs(int v, int prev) {
+    int init = stz;
+    st[stz++]=v;
+    int res=d[v]=init;
+    for(auto& edge : g.ed[v]){
+      int nv = edge;
+	  if(nv==prev) continue;
+      if(d[nv] < 0) { //not visited
+        res = min(res,dfs(nv));
+      }
+      else { res = min(res, d[nv]); }  //visited
+    }
+
+    //edge bi-connected component or strongly connected compoenent. root is selected by default
+    //all the items from timer till the end of the stack belongs to one biconnected component.
+    //all the edges among those items only needs to be selected.
+    //(There could be outgoing edges to other components which needs to be ignored.)
+    if(res == init){
+      for(int i=init;i<stz;i++){d[st[i]]=cs;}
+      cs++;
+      stz=init;
+    }
+    return res;
+  }
+  void generatescc() {
+    for(int i=0;i<n;i++)
+      if(d[i]<0)dfs(i,-1);
+    for(int i=0;i<n;i++){
+      assert(d[i]>=n);
+      d[i]-=n;
+    }
+    cs-=n;
+    gc.reset(cs);
+    set<pi> seen;
+    for(int i=0;i<n;i++){
+      for(auto j:g.ed[i])
+        if(d[i]!=d[j] && seen.find({d[i],d[j]})==seen.end()){
+          seen.insert({d[i],d[j]});
+
+          //check for bi directional add
+          //seen.insert({d[j],d[i]});
+          gc.add(d[i],d[j]);
+        }
+    }
+  }
+};
+endsnippet
 
 snippet tarjan "tarjan algo for scc and bi vertex and bi edge"
 class tarjan {
@@ -698,3 +769,48 @@ class flow{
 };
 endsnippet
 
+snippet 2sat "two satisfiability algo"
+struct sat2 {
+  //graph should be directional
+  graphal g;
+  int n;
+  sat2(int n) {
+    g.reset(2*n);
+    n=2*n;
+  }
+  void reset(int n) {
+    g.reset(2*n);
+    this->n=2*n;
+  }
+  int getix(int ix) {
+    return ix*2;
+  }
+  void mustTrue(int ia) {
+    g.add(ia^1,ia);
+  }
+  void orC(int ia, int ib) {
+    //!a->b !b->a
+    g.add(ia^1,ib);
+    g.add(ib^1,ia);
+  }
+  void xorC(int ia, int ib) {
+    orC(ia,ib);
+    orC(ia^1,ib^1);
+  }
+  void andC(int ia, int ib) {
+    g.add(ia,ib);
+    g.add(ib,ia);
+  }
+  void nandC(int ia, int ib) {
+    orC(ia^1,ib^1);
+  }
+  bool possible() {
+    scctarjan scc(g);
+    scc.generatescc();
+    for(int i=0;i<n;i+=2){
+      if(scc.d[i]==scc.d[i+1])return false;
+    }
+    return true;
+  }
+};
+endsnippet
