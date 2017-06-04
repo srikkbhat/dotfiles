@@ -166,3 +166,28 @@ using namespace __gnu_pbds;
 template <typename T>
 using ordered_set = tree<T, null_type, less<T>, rb_tree_tag, tree_order_statistics_node_update>;
 endsnippet
+
+snippet centroid "centroid of a tree"
+    void cdfs(int v, vi &sz, int &ct, int pa=-1){
+      for(auto i:ed[v])
+        if(i!=pa){
+          cdfs(i,sz,ct,v);
+          sz[v]+=sz[i];
+        }
+      sz[v]++;
+      int mx=n-sz[v];
+      if(ct==-1 && mx<=n/2){
+        for(auto i:ed[v])
+          if(i!=pa){
+            domax(mx,sz[i]);
+          }
+        if(mx<=(n/2))ct=v;
+      }
+    }
+    void centroid(){
+      vi sz(n,0);
+      int ct=-1;
+      cdfs(0,sz,ct);
+      assert(ct!=-1);
+    }
+endsnippet
