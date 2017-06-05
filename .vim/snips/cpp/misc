@@ -114,6 +114,24 @@ bool isprime(ll n){
   return true;
 }
 endsnippet
+snippet knapsacksparse "knapsack sparse"
+  #define MAXN 1000005
+  vi tl(MAXN,0);
+  //populate tl
+  bitset<MAXN> bt;
+  bt.set(n);
+  for(int i=1;i<MAXN;i++)
+  if(tl[i]){
+    int cnt=tl[i], pt=1;
+    while(cnt){
+      pt = min(pt,cnt);
+      int val=pt*i;
+      bt |= (bt>>val);
+      cnt-=pt;
+      pt*=2;
+    }
+  }
+endsnippet
 snippet matrix "matrix multiplication and exp"
 class mat{
   typedef ${1:int} T;
