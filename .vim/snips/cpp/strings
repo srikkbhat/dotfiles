@@ -53,39 +53,66 @@ void zalgo(const T &s) {
   }
 }
 endsnippet
+
 snippet hash "hashing"
-ll pw[2][MAXL];
+int pw[2][MAXL];
 struct mhash {
-  static const int MODA=1000000007;
-  static const int MODB=1000000009;
-  static const int BA=31;
-  static const int BB=29;
+  static int md[2];
+  const ll b[2]={31,29};
   static bool done;
-  pi h;
+  pll h;
+  vi vh[2];
+  int re[2];
   int len;
-  mhash():h({0,0}),len(0){}
+  mhash():h({0,0}),len(0){
+    if(!done){ calcpw(); }
+  }
+  mhash(char *st){
+    if(!done){calcpw();}
+    len=strlen(st);
+    vh[0].assign(len+1,0);
+    vh[1].assign(len+1,0);
+    for(int i=1;i<=len;i++){
+      for(int j=0;j<2;j++){
+        vh[j][i]=(vh[j][i-1]*b[j]+st[i-1]-'a')%md[j];
+      }
+    }
+  }
+  ll geth(int l, int r){
+    for(int i=0;i<2;i++){
+      re[i]=(vh[i][r] - (ll)vh[i][l-1]*pw[i][r-l+1])%md[i];
+      if(re[i]<0)re[i]+=md[i];
+    }
+    return (((ll)re[0]<<30)|re[1]);
+  }
   void reset(){h.fi=h.se=len=0;}
   void merge(char c){
-    h.fi=(ll(BA)*h.fi+(c-'a')+1)%MODA;
-    h.se=(ll(BB)*h.se+(c-'a')+1)%MODB;
+    h.fi=(b[0]*h.fi+(c-'a')+1)%md[0];
+    h.se=(b[1]*h.se+(c-'a')+1)%md[1];
     len++;
   }
   void merge(const mhash &o){
-    if(!done){ calcpw(); }
     if(o.len==0)return;
-    h.fi = (h.fi*pw[0][o.len]+o.h.fi)%MODA;
-    h.se = (h.se*pw[1][o.len]+o.h.se)%MODB;
+    h.fi = (h.fi*pw[0][o.len]+o.h.fi)%md[0];
+    h.se = (h.se*pw[1][o.len]+o.h.se)%md[1];
     len+=o.len;
     assert(len<MAXL);
   }
   ll geth(){ll ret=h.fi;ret <<= 30;return(ret|h.se);}
-  static void calcpw(){
+  bool isPrime(int x) {for(int i=2;i*i<=x;i++){if(x%i==0) return 0;} return 1;}
+  void calcpw(){
     done=true;
+    for(int i=1e9+24,j=0;j<2;i++){
+      if((rand()&7)==0 && isPrime(i)){
+        md[j]=i;
+        j++;
+      }
+    }
     pw[0][0]=1;
     pw[1][0]=1;
     for(int i=1;i<MAXL;i++){
-      pw[0][i]=(pw[0][i-1]*BA)%MODA;
-      pw[1][i]=(pw[1][i-1]*BB)%MODB;
+      pw[0][i]=(pw[0][i-1]*b[0])%md[0];
+      pw[1][i]=(pw[1][i-1]*b[1])%md[1];
     }
   }
   mhash& operator=(const mhash &o){
@@ -100,4 +127,5 @@ struct mhash {
   bool operator==(const mhash &o)const{return h.fi==o.h.fi && h.se==o.h.se;}
 };
 bool mhash::done=false;
+int mhash::md[2]={0,0};
 endsnippet
