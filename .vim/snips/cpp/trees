@@ -34,7 +34,7 @@ struct segval{
 };
 
 struct segtree{
-  const int &n; const vector<ll> &a;
+  const int n; const vector<ll> &a;
   int mxsz;
   vector<segval> val;
   vector<segdiff> diff;
@@ -92,6 +92,61 @@ struct segtree{
     return result;
   }
 };
+endsnippet
+
+snippet heavylightdecomp "heavy light decomposition"
+void dfshld(int v, int pa,int h, vi &sz, vi &sc){
+  sz[v]=1;
+  hldp[v]=pa;
+  ht[v]=h;
+
+  int szhld=0;
+  for(auto i:ed[v])
+    if(i.fi!=pa){
+      dfshld(i.fi,v,h+1,sz,sc);
+      sz[v]+=sz[i.fi];
+      if(sz[i.fi]>szhld){
+        szhld=sz[i.fi];
+        sc[v]=i.fi;
+      }
+    }
+}
+void buildhld() {
+  vi sz(n,0), sc(n,-1);
+  dfshld(0,-1,0,sz,sc);
+  int t=0;
+  for(int i=0;i<n;i++)
+    if(hldp[i]==-1 || sc[hldp[i]]!=i){
+      int v=i;
+      while(v!=-1){
+        root[v]=i;
+        tix[v]=t++;
+        v=sc[v];
+      }
+    }
+  assert(t==n);
+  segt.build();
+}
+void update(int a, int b, int v){
+  while(root[a]!=root[b]){
+    if(ht[root[a]]>ht[root[b]])swap(a,b);
+    segt.updaterange(tix[root[b]],tix[b],v);
+    b=hldp[root[b]];
+  }
+  if(ht[a]>ht[b])swap(a,b);
+  segt.updaterange(tix[a],tix[b],v);
+}
+int query(int a, int b){
+  int result=MODV;
+  while(root[a]!=root[b]){
+    if(ht[root[a]]>ht[root[b]])swap(a,b);
+    domin(result,segt.query(tix[root[b]],tix[b]).getval());
+    b=hldp[root[b]];
+  }
+  if(ht[a]>ht[b])swap(a,b);
+  domin(result,segt.query(tix[a],tix[b]).getval());
+  return result==MODV?0:result;
+}
 endsnippet
 
 snippet fenwicksum "range sum using fenwick"

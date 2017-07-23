@@ -229,95 +229,45 @@ class maxbpm {
 endsnippet
 
 snippet lca "least common ancestor"
-class lca {
-  const graphal &g;
+struct lca {
+  const graphwal &g;
   static const int L=21;
   const int n;
-  int timer;
-  vector<vi> up;
-  vi tin, tout, h;
-  public:
-  lca(const graphal &g, const int &n):
-    g(g),n(n),timer(0),tin(n,0),tout(n,0),h(n,0),
-    up(n,vi(L,0)){ }
-  void dfs(int v=0, int p=-1){
+  vector<vi> up, mx;
+  vi h;
+  lca(const graphwal &g, const int &n):
+    g(g),n(n), up(n,vi(L,0)),mx(n,vi(L,0)),h(n,0){ }
+  void dfs(int v=0, int p=0){
     int x;
-    tin[v]=timer++;
-    up[v][0]=p;
     for(int i=1;i<L;i++){
       x=up[v][i-1];
-      if(x==-1)up[v][i]=-1;
-      else up[v][i]=up[x][i-1];
+      up[v][i]=up[x][i-1];
+      mx[v][i]=max(mx[v][i-1],mx[x][i-1]);
     }
     for(auto i:g.ed[v])
-      if(i!=p){
-        h[i]=h[v]+1;
-        dfs(i,v);
+      if(i.fi!=p){
+        h[i.fi]=h[v]+1;
+        up[i.fi][0]=v;
+        mx[i.fi][0]=i.se;
+        dfs(i.fi,v);
       }
-    tout[v]=timer++;
   }
-  bool isa(int a, int b){ return ((a==-1) || (tin[a]<=tin[b] && tout[a]>=tout[b]));}
+  //get max between path a and b
   int getlca(int a, int b){
-    if(isa(a,b))return a;
-    if(isa(b,a))return b;
-    for(int i=L-1;i>=0;i--){
-      if(!isa(up[a][i],b))a=up[a][i];
+    int result=0;
+    if(h[a]>h[b])swap(a,b);
+    for(int i=L-1;i>=0;i--){if(h[a]<=h[up[b][i]])domax(result,mx[b][i]),b=up[b][i];}
+    if(a==b)return result;
+    for(int i=L-1;i>=0;i--){if(up[a][i]!=up[b][i])
+      domax(result,mx[a][i]),domax(result,mx[b][i]),a=up[a][i],b=up[b][i];
     }
-    return up[a][0]==-1?a:up[a][0];
+    domax(result,max(mx[a][0],mx[b][0]));
+    return result;
   }
-  int getdist(int a, int b){ return h[a]+h[b]-2*h[getlca(a,b)]; }
   int go(int v, int len){
-    for(auto i=L-1;i>=0;i--)if(up[v][i]!=-1 && (len&(1<<i))){ v=up[v][i];}
+    for(auto i=L-1;i>=0;i--) if((len&(1<<i))){ v=up[v][i]; }
     return v;
   }
-};
-endsnippet
-
-snippet dijkstra "Dijkstra's shortest path algorithm"
-class dijkstra{
-  public:
-    typedef ${1:int} dt;
-    typedef pair<dt,int> pt;
-    int n, done;
-    const graphwal &g;
-    vector<dt> d;
-    vi pr;
-    vector<bool> v;
-    const static dt MAXV=${2:INT_MAX};
-    priority_queue<pt,vector<pt>,${3:greater<pt>}> h;
-    dijkstra(const graphwal &g):
-      n(g.n),done(-1),g(g),
-      d(n),pr(n),v(n){ }
-    void findall(int sr=0){
-      pt ret;
-      fill(v.begin(),v.end(),false);
-      fill(pr.begin(),pr.end(),-1);
-      fill(d.begin(),d.end(),MAXV);
-      d[sr]=0;
-      for(auto i:g.ed[sr]){
-        d[i.fi]=i.se;
-        h.push(pt(i.se,i.fi));
-      }
-      while(!h.empty()){
-        ret=h.top();
-        h.pop();
-        if(v[ret.se])continue;
-        v[ret.se]=true;
-        for(auto i:g.ed[ret.se]){
-          if(!v[i.fi] && d[i.fi]-i.se > ret.fi){
-            d[i.fi]=ret.fi+i.se;
-            pr[i.fi]=ret.se;
-            h.push(pt(d[i.fi],i.fi));
-          }
-        }
-      }
-      done=sr;
-    }
-    dt find(int tr, int sr=0){
-      if(done!=sr) findall(sr);
-      if(d[tr]==MAXV)return -1;
-      return d[tr];
-    }
 };
 endsnippet
 
