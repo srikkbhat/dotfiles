@@ -270,6 +270,53 @@ struct lca {
   }
 };
 endsnippet
+snippet dijkstra "Dijkstra's shortest path algorithm"
+class dijkstra{
+  public:
+    typedef ${1:int} dt;
+    typedef pair<dt,int> pt;
+    int n, done;
+    const graphwal &g;
+    vector<dt> d;
+    vi pr;
+    vector<bool> v;
+    const static dt MAXV=${2:INT_MAX};
+    priority_queue<pt,vector<pt>,${3:greater<pt>}> h;
+    dijkstra(const graphwal &g):
+      n(g.n),done(-1),g(g),
+      d(n),pr(n),v(n){ }
+    void findall(int sr=0){
+      pt ret;
+      fill(v.begin(),v.end(),false);
+      fill(pr.begin(),pr.end(),-1);
+      fill(d.begin(),d.end(),MAXV);
+      d[sr]=0;
+      for(auto i:g.ed[sr]){
+        d[i.fi]=i.se;
+        h.push(pt(i.se,i.fi));
+      }
+      while(!h.empty()){
+        ret=h.top();
+        h.pop();
+        if(v[ret.se])continue;
+        v[ret.se]=true;
+        for(auto i:g.ed[ret.se]){
+          if(!v[i.fi] && d[i.fi]-i.se > ret.fi){
+            d[i.fi]=ret.fi+i.se;
+            pr[i.fi]=ret.se;
+            h.push(pt(d[i.fi],i.fi));
+          }
+        }
+      }
+      done=sr;
+    }
+    dt find(int tr, int sr=0){
+      if(done!=sr) findall(sr);
+      if(d[tr]==MAXV)return -1;
+      return d[tr];
+    }
+};
+endsnippet
 
 snippet prims "prim's algorithm for mst"
 class prims{
