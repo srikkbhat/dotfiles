@@ -214,6 +214,67 @@ class crix{
   bool wraps(int ix, T a, T b){return (a<=vpt[ix].fi && b>=vpt[ix].se);}
 };
 endsnippet
+
+snippet bignumlog "handle big number as log"
+struct bignum{
+  bool zero=true;
+  dbl lg=0;
+  int md=0;
+  bignum(){}
+  bignum(int v){ set(v); }
+  bignum(const bignum &a):zero(a.zero),lg(a.lg),md(a.md){}
+  void setzero() {
+    zero=true;
+    md=0;
+  }
+  void set(int v){
+    if(v==0)return setzero();
+    zero=false;
+    lg=log(v);
+    md=v%MODV;
+  }
+  void mul(const bignum &o){
+    if(o.zero)setzero();
+    if(zero)return;
+    lg+=o.lg;
+    mulmod(md,o.md);
+  }
+  void mul(int n){
+    if(zero)return;
+    if(n==0)return setzero();
+    dbl dn=n;
+    lg+=log(dn);
+    mulmod(md,n);
+  }
+  void mul(int n, int p){
+    if(zero)return;
+    if(n==0)return setzero();
+    dbl dn=n;
+    lg+=(log(dn)*p);
+    mulmod(md,power(n,p));
+  }
+  void pw(int p) {
+    if(zero)return;
+    lg*=p;
+    md=power(md,p);
+  }
+  bool operator < (const bignum &ot) const {
+    if(ot.zero)return false;
+    if(zero)return true;
+    return lg<ot.lg;
+  }
+};
+bignum max(const bignum &a, const bignum &b) {
+  if(a<b)return bignum(b);
+  return bignum(a);
+}
+bignum mul(const bignum &a, const bignum &b) {
+  bignum result(a);
+  result.mul(b);
+  return result;
+}
+endsnippet
+
 snippet fft "fft"
 namespace FFT {
   #define PI 3.141592653589793
@@ -407,7 +468,7 @@ struct mirrors {
     return a;
   }
 
-  //1 to c on top row, c+1 to c+r on the right column, 
+  //1 to c on top row, c+1 to c+r on the right column,
   //c+r+1 to c+r+c on bottom row, c+c+r+1 to c+c+r+r on left column
   pi getpi(int a){
     if(a<=c)return {0,a};
