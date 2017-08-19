@@ -10,3 +10,4 @@
 !.vim/snips/**/*
 !bin/
 !bin/**/*
+bin/.gitignore
