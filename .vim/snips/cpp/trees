@@ -175,11 +175,11 @@ endsnippet
 snippet fenwickmax "range max using fenwick"
 template <typename T>
 class fenwick {
-  int n;vector<T> a; vecto<T> v;
+  int n;vector<T> a; vector<T> v;
   public:
   fenwick(int n):n(n),a(n+1),v(n+1){}
   void set(int ix, T val) { if(v[ix]<val) {v[ix]=val;for(int i=ix;i<=n;i+=(i&(-i)))a[i]=max(a[i],val);}}
-  T getmax(int ix){ $1 ret=0; for(int i=ix;i>0;i-=(i&(-i)))ret=max(ret,a[i]); return ret; }
+  T getmax(int ix){ T ret=0; for(int i=ix;i>0;i-=(i&(-i)))ret=max(ret,a[i]); return ret; }
   T getrangemax(int ia, int ib){
     if(ia==ib)return v[ia];
     int ix=ib-(ib&(-ib));
