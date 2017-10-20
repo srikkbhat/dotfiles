@@ -246,3 +246,114 @@ snippet centroid "centroid of a tree"
       assert(ct!=-1);
     }
 endsnippet
+
+snippet treap "treap"
+namespace treap {
+  static const int TPMX=300007;
+  struct treap {
+    int val, size, lazy;
+    ll rnd;
+    treap *l, *r;
+    treap():val(0),size(1),lazy(0),rnd((((ll)rand())<<32)|rand()),l(NULL),r(NULL){}
+    treap(int val):val(val),size(1),lazy(0),rnd((((ll)rand())<<32)|rand()),l(NULL),r(NULL){}
+    void push() {
+      if(lazy==0)return;
+      val+=lazy;
+      if(l!=NULL)l->lazy+=lazy;
+      if(r!=NULL)r->lazy+=lazy;
+      lazy=0;
+    }
+    void updateSz() {
+      size=1;
+      if(l!=NULL)size+=l->size;
+      if(r!=NULL)size+=r->size;
+    }
+  };
+  treap buffer[TPMX];
+  int bix=0;
+  typedef treap * ptreap;
+  ptreap root = NULL;
+
+  void split(ptreap tp, int key, ptreap &l, ptreap &r){
+    if(tp==NULL){l=NULL,r=NULL; return;}
+    tp->push();
+    if(tp->val<key) l=tp, split(tp->r,key,tp->r,r);
+    else r=tp, split(tp->l,key,l,tp->l);
+
+    if(l!=NULL)l->updateSz();
+    if(r!=NULL)r->updateSz();
+  }
+  pair<ptreap,ptreap> split(int v){
+    ptreap l, r;
+    split(root,v,l,r);
+    root=NULL;
+    return {l,r};
+  }
+  pair<ptreap,ptreap> split(ptreap tp, int v){
+    ptreap l, r;
+    split(tp,v,l,r);
+    return {l,r};
+  }
+  void insert(ptreap &tp, const ptreap &v){
+    if(tp == NULL) { tp=v; return; }
+    tp->push();
+    if(v->rnd < tp->rnd) insert(v->val>tp->val?tp->r:tp->l,v);
+    else split(tp,v->val,v->l,v->r), tp=v;
+
+    tp->updateSz();
+  }
+  void insert(int v){
+    assert(bix<TPMX);
+    ptreap tp = &buffer[bix++];
+    tp->val=v;
+
+    //ptreap tp = new treap(v);
+    
+    insert(root,tp);
+  }
+  void merge(ptreap &t,ptreap l, ptreap r){
+    if(l==NULL || r==NULL) {
+      t=(l==NULL?r:l);
+      return;
+    }
+    l->push();r->push();
+    if(l->rnd>r->rnd) t=l, merge(t->r,l->r,r);
+    else t=r, merge(t->l,l,r->l);
+    if(t!=NULL)t->updateSz();
+  }
+  void erase(ptreap &tp, int v){
+    if(tp==NULL)return;
+    tp->push();
+    if(v==tp->val){
+      merge(tp,tp->l,tp->r);
+    }else{
+      erase(v<tp->val?tp->l:tp->r,v);
+      tp->updateSz();
+    }
+  }
+  int getmin(const ptreap &tp){
+    if(tp==NULL) return 0;
+    tp->push();
+    return tp->l==NULL?tp->val:getmin(tp->l);
+  }
+  int getmax(const ptreap &tp){
+    if(tp==NULL) return 0;
+    tp->push();
+    return tp->r==NULL?tp->val:getmax(tp->r);
+  }
+  void recalc(const ptreap &tp){
+    if(tp==NULL)return;
+    tp->push();
+    recalc(tp->l);
+    recalc(tp->r);
+    tp->updateSz();
+  }
+  void debug(ptreap &tp) {
+    if(tp==NULL)return;
+    tp->push();
+    if(tp->l!=NULL)debug(tp->l);
+    cout<<"    "<<tp->val<<":"<<tp->rnd<<":"<<tp->size<<endl;
+    if(tp->r!=NULL)debug(tp->r);
+  }
+}
+endsnippet
