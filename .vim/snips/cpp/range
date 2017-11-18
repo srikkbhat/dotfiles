@@ -122,39 +122,52 @@ class sqrtdecomp{
 };
 endsnippet
 snippet moalgo "mo's algorithm"
-struct mo {
-  static const int BLK=225;
-  int l, r;
-  bool operator< (const mo &o) const{
-    int lb=l/BLK, ob=o.l/BLK;
-    if(lb!=ob)return lb<ob;
-    return r<o.r;
-  }
-};
-  int q;
-  vector<mo> m(q);
-  sort(m.begin(), m.end());
-  //zero based indexing
-  int cr=0, cl=0;
-  for(int i=0;i<q;i++){
-    mo &t=m[i];
-    while(cr<=t.r){
-      //add cr
+namespace mo{
+#define MAXQ ${1:100007}
+  static const int BLK=sqrt(MAXQ)+5;
 
-      cr++;
+  struct mo {
+    int l, r, ix;
+    mo(int l, int r,int ix):l(l),r(r),ix(ix){}
+    mo(){}
+    bool operator< (const mo &o) const{
+      int lb=l/BLK, ob=o.l/BLK;
+      if(lb!=ob)return lb<ob;
+      return r<o.r;
     }
-    while(cl<t.l){
-      //remove cl
+  };
+  int q=0;
+  mo m[MAXQ];
+  void add(int l, int r, int ix){
+    m[q++]=mo(l,r,ix);
+  }
+  void doit() {
+    sort(m,m+q);
+    //zero based indexing
+    int cleft=0, cright=0;
+    for(int i=0;i<q;i++){
+      mo &t=m[i];
+      while(cright<=t.r){
+        //add cr
 
-      cl++;
-    }
-    while(cl>t.l){
-      cl--;
-      //add cl
-    }
-    while(cr>(t.r+1)){
-      cr--;
-      //remove cr
+        cright++;
+      }
+      while(cleft<t.l){
+        //remove cl
+
+        cleft++;
+      }
+      while(cleft>t.l){
+        cleft--;
+        //add cl
+
+      }
+      while(cright>(t.r+1)){
+        cright--;
+        //remove cr
+
+      }
     }
   }
+}
 endsnippet

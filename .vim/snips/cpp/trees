@@ -191,13 +191,17 @@ class fenwick {
 endsnippet
 
 snippet trie "form a tree using array of words"
-class trie {
-  int ix, tx;
-  vector<vi> t;
-  vi endix;
-  public:
+namespace trie${1:0}{
+  const int MAXT = ${0:1000007}
+  int t[MAXT][26];
+  int endix[MAXT];
+  class trie {
+    int ix, tx;
+    public:
     trie():
-      ix(0),tx(1),t(MAXT,vi(26,0)),endix(MAXT,-1){}
+      ix(0),tx(1){
+        memset(endix,-1,sizeof(endix));
+      }
     void update(const char* s, int tix=0){
       if((*s)==0){
         endix[tix]=ix;
@@ -211,7 +215,8 @@ class trie {
       update(s);
       ix++;
     }
-};
+  };
+}
 endsnippet
 
 snippet policy "policy based structure"
@@ -308,7 +313,7 @@ namespace treap {
     tp->val=v;
 
     //ptreap tp = new treap(v);
-    
+
     insert(root,tp);
   }
   void merge(ptreap &t,ptreap l, ptreap r){
