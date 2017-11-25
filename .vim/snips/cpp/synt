@@ -147,7 +147,7 @@ int gi(){int a;scanf("%d",&a);return a;}
 ll gll(){ll a;scanf("%lld",&a);return a;}
 
 int main() {
-#ifndef SRIKKHOME
+#ifndef LOCAL
   freopen("$1.in", "r",stdin);
   freopen("$1.out", "w",stdout);
 #endif

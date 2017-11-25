@@ -13,15 +13,20 @@ Plugin 'scrooloose/nerdtree'
 "solarized colors for vim
 Plugin 'altercation/vim-colors-solarized'
 
+"surround for paranthesis
+Plugin 'tpope/vim-surround'
+
 "File switch from on to another
 "ctrl-p opens ctrlp
 Plugin 'ctrlpvim/ctrlp.vim'
 
-"snippets
-Plugin 'SirVer/ultisnips'
+"Plugin 'ervandew/supertab'
 
 Plugin 'Valloric/YouCompleteMe'
-Plugin 'Valloric/ListToggle'
+"Plugin 'Valloric/ListToggle'
+
+"snippets
+Plugin 'SirVer/ultisnips'
 
 "syntastic - syntax checker
 Plugin 'scrooloose/syntastic'
@@ -50,6 +55,8 @@ Plugin 'google/vim-colorscheme-primary'
 call vundle#end()            " required
 filetype plugin indent on    " required
 
+"g++ -ggdb -Wall -pipe -std=c++11 -O2 -DLOCAL
+autocmd filetype cpp nnoremap <F5> :w <bar> !g++ -ggdb -Wall -std=c++11   -O2  -DLOCAL  % -o %:r && ./%:r <CR>
 
 let mapleader=','
 
@@ -58,6 +65,7 @@ set tabstop=2
 set softtabstop=2
 set shiftwidth=2
 set shiftround
+set smarttab
 set expandtab
 
 " Useful settings
@@ -92,6 +100,7 @@ set laststatus=2 "Always show the status line
 
 set autoindent
 set smartindent
+set cindent
 set autoread " Reload files when changed
 
 " Set code folding method
@@ -195,18 +204,22 @@ let g:syntastic_check_on_wq = 0
 let g:syntastic_cpp_compiler = 'g++'
 let g:syntastic_cpp_compiler_options = ' -std=c++11'
 
+"YouCompleteMe
+let g:ycm_global_ycm_extra_conf = "~/.vim/.ycm_extra_conf.py"
+let g:ycm_autoclose_preview_window_after_completion = 1
+"let g:ycm_key_list_select_completion=['<C-n>', '<Down>']
+"let g:ycm_key_list_previous_completion=['<C-p>', '<Up>']
+
+"let g:SuperTabDefaultCompletionType = '<C-n>'
+
 "remap ultisnip expand
-let g:UltiSnipsExpandTrigger = "<c-j>"
+let g:UltiSnipsExpandTrigger = "<C-j>"
+"let g:UltiSnipsJumpForwardTrigger = "<C-j>"
+"let g:UltiSnipsJumpBackwardTrigger = "<C-k>"
 let g:UltiSnipsListSnippets = "<c-tab>"
 let g:UltiSnipsSnippetsDir = "~/.vim/snips"
 let g:UltiSnipsSnippetDirectories = ["snips"]
 
-"YouCompleteMe
-let g:ycm_global_ycm_extra_conf = "~/.vim/.ycm_extra_conf.py"
-let g:ycm_autoclose_preview_window_after_completion = 1
-"YCM not to use tab key for UtilSnips
-"let g:ycm_key_list_select_completion=[]
-"let g:ycm_key_list_previous_completion=[]
 
 " Open NerdTree
 map <leader>n :NERDTreeToggle<CR>
