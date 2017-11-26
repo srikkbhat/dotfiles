@@ -23,7 +23,7 @@ Plugin 'ctrlpvim/ctrlp.vim'
 "Plugin 'ervandew/supertab'
 
 Plugin 'Valloric/YouCompleteMe'
-"Plugin 'Valloric/ListToggle'
+Plugin 'Valloric/ListToggle'
 
 "snippets
 Plugin 'SirVer/ultisnips'
@@ -207,6 +207,7 @@ let g:syntastic_cpp_compiler_options = ' -std=c++11'
 "YouCompleteMe
 let g:ycm_global_ycm_extra_conf = "~/.vim/.ycm_extra_conf.py"
 let g:ycm_autoclose_preview_window_after_completion = 1
+let g:ycm_always_populate_location_list = 1
 "let g:ycm_key_list_select_completion=['<C-n>', '<Down>']
 "let g:ycm_key_list_previous_completion=['<C-p>', '<Up>']
 
