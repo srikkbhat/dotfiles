@@ -154,6 +154,9 @@ vnoremap <c-c> "+y
 "map <Leader>n <esc>:tabprevious<CR>
 map <Leader>m <esc>:tabnext<CR>
 
+"yank entire file
+map <Leader>y :%y+<CR>
+
 "easier moving between buffers
 map gt :bnext<CR>
 
