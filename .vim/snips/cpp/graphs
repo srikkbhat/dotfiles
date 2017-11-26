@@ -678,92 +678,91 @@ void eulertour(){
 }
 endsnippet
 
-snippet flow "flow network using priority q"
-//T should be signed.
-template<class T>
-class flow{
-  typedef pair<T,int> pqdt;
-  typedef vector<T> vt;
-  typedef graphed<T> fgraph;
-  typedef edge<T> fedge;
-  public:
-  int n, ssourcev, ssinkv;
-  bool sourceb=false, sinkb=false;
-  fgraph &g;
-  flow(const int &n, fgraph &g):n(n),g(g){}
+snippet flow "network flow using priority q"
+namespace flow{
+  typedef ${1:ll} dt;
+  typedef pair<dt,int> pqdt;
+  const int MAXED=${2:MAXM*2};
+  const int MAXNO=${3:MAXN};
+  const dt MAXV=numeric_limits<dt>::max();
 
-  void addedge(const int &s, const int &d, const T &cap){ g.add(s,d,cap); g.add(d,s,0); }
-  void load(int m){
-    int a,b;T cap;
-    for(int i=0;i<m;i++){
-      a=gi()-1, b=gi()-1,cap=gll();
-      addedge(a,b,cap);
-    }
+  int edgeindex[MAXN][MAXN];
+  vi adj[MAXN];
+
+  int edgefrom[MAXED], edgeto[MAXED];
+  dt edgecap[MAXED], edgeflow[MAXED];
+  int es=0, n=-1;
+
+  void init(int pn){
+    memset(edgeindex,-1,sizeof(edgeindex));
+    memset(edgecap,0,sizeof(edgecap));
+    memset(edgeflow,0,sizeof(edgeflow));
+    es=0;
+    n=pn;
   }
-  void addssedge(const int &v, const T &cap, bool issource=true){
-    if(issource && !sourceb){
-      sourceb=true;
-      ssourcev=n;
-      g.resize(++n);
+  void addedge(int s, int d, dt cap){
+    assert(s!=d);
+    assert(s>=0 && d>=0 && s<n && d<n);
+    if(edgeindex[s][d]==-1){
+      edgefrom[es]=s, edgeto[es]=d;
+      adj[s].pb(es);
+      edgeindex[s][d]=es++;
+
+      edgefrom[es]=d, edgeto[es]=s;
+      adj[d].pb(es);
+      edgeindex[d][s]=es++;
+      assert(es<MAXED);
     }
-    if(!issource && !sinkb){
-      sinkb=true;
-      ssinkv=n;
-      g.resize(++n);
-    }
-    if(issource)addedge(ssourcev,v,cap);
-    else addedge(v,ssinkv,cap);
+    int ix=edgeindex[s][d];
+    edgecap[ix]+=cap;
   }
-  T augment(int source, int sink){
-    const T MAXV = numeric_limits<T>::max();
-    vt d(n,0);
-    vi pr(n,-1);
+  dt flowdist[MAXNO];
+  int flowprev[MAXNO];
+  dt augment(int source, int sink){
+    memset(flowdist,0,sizeof(flowdist));
+    memset(flowprev,-1,sizeof(flowprev));
     priority_queue<pqdt> q;
-    d[source]=MAXV;
+    flowdist[source]=MAXV;
     q.push({MAXV,source});
     int cur=-1;
-    T dist,res;
+    dt dist,res;
     while(!q.empty() && cur!=sink){
       dist=q.top().fi;
       cur=q.top().se;
       q.pop();
-      if(dist!=d[cur])continue;
+      if(dist!=flowdist[cur])continue;
       if(cur==sink)continue;
-      for(auto i:g.e[cur]){
-        const fedge &e=g.edges[i];
-        T td=min(dist,e.cap-e.flow);
-        if(td>d[e.b]){
-          d[e.b]=td;
-          pr[e.b]=i;
-          q.push({td,e.b});
+      for(auto i:adj[cur]){
+        int to=edgeto[i];
+        dt td=min(dist,edgecap[i]-edgeflow[i]);
+        if(td>flowdist[to]){
+          flowdist[to]=td;
+          flowprev[to]=i;
+          q.push({td,to});
         }
       }
     }
-    if(d[sink]==0)return 0;
-    res=d[sink];
+    if(flowdist[sink]==0)return 0;
+    res=flowdist[sink];
     cur=sink;
     while(cur!=source){
-      int eix=pr[cur];
+      int eix=flowprev[cur];
       assert(eix>=0);
-      fedge &ed = g.edges[eix];
-      fedge &red = g.edges[eix^1];
-      assert(cur==ed.b);
-      ed.flow+=res;
-      red.flow-=res;
-      cur=ed.a;
+      assert(cur==edgeto[eix]);
+      edgeflow[eix]+=res;
+      edgeflow[eix^1]-=res;
+      cur=edgefrom[eix];
     }
     return res;
   }
-  T calc(){return calc(ssourcev,ssinkv);}
-  T calc(int source, int sink){
-    assert((source>=0)&&(sink>=0)&&(source<n)&&(sink<n));
-    for(auto &i:g.edges){i.flow = 0;}
-    T res=0;
-    T up;
-    while((up=augment(source,sink))!=0)res+=up;
-    return res;
+  dt calc(int s, int d){
+    assert(s>=0 && d>=0 && s<n && d<n);
+    for(int i=0;i<es;i++)edgeflow[i]=0;
+    dt result=0, up;
+    while((up=augment(s,d))!=0)result+=up;
+    return result;
   }
-};
+}
 endsnippet
 
 snippet 2sat "two satisfiability algo"
